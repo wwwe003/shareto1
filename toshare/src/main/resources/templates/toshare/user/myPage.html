@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/login.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/myPage.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/follow.css}">
+
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    <script th:src="@{https://use.fontawesome.com/releases/v5.15.1/js/all.js}" data-auto-replace-svg="nest"></script>
+    <script th:src="@{/js/user/myPage.js}"></script>
+
+    <title>MyPage</title>
+</head>
+<body style="background:#F5F5F5">
+    <div th:replace="~{toshare/main::topbar}"></div>
+    <div class="" style="width: 1110px; height: 180px; margin: auto">
+        <div class="row" >
+            <div class="col-md-12 w-80" style="padding: 0">
+                <img th:src="@{/images/program.jpg}" style="width: 100%; height: 180px">
+            </div>
+        </div>
+    </div>
+    <div class="" style="width: 1110px; height: 71px; margin: auto">
+        <div class="row" style="background:white; z-index: 100;border-top: 2px #99cc99 solid;border-radius: 0 0 10px 10px ">
+            <div class="col-md-12 w-80 Tabs">
+                <input type="hidden" th:id="${session.sessionUser!=null?session.sessionUser.getUid():'-1'}" th:value="${session.sessionUser?.getUserno()}" th:name="${session.sessionUser?.getUsername()}">
+                <input type="hidden" th:id="${followState}" class="followState" th:name="${followerNum}" th:value="${totalLikes}">
+                <div class="Tabs-milestone">
+                    <span id="totallikes" th:text="'totallikes : '+${totalLikes}"></span>
+                    <span id="follower" th:text="'follower : '+${followerNum}"></span>
+                </div>
+                <div class="Tabs-item">
+                    <span id="timeline">timeline</span>
+                    <span id="dynamic">dynamic</span>
+                    <span id="favorite">favorite</span>
+                    <span id="follow">following</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-3 bg-white" style="height: 300px">
+                <div class="user-icon text-center mb-3 mt-3">
+                    <i class="fas fa-book-open fa-4x"></i>
+                </div>
+                <div class="mb-3 text-center username" id="username" th:text="${pageUsername}">
+                </div>
+                <div id="followPageUser">
+<!--                    <div class="user-subscribe"><span>following</span><div class="followed" style="display: none;"><ul class="follow_dropdown"><li>cancel</li></ul></div></div>-->
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-8 bg-white pt-3 pb-3 pr-4 pl-4" id="userList">
+
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{toshare/article::#loginModal}"></div>
+</body>
+</html>

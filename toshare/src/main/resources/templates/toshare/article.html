@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/login.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/article.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/common/follow.css}">
+
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    <script th:src="@{https://use.fontawesome.com/releases/v5.15.1/js/all.js}" data-auto-replace-svg="nest"></script>
+
+    <title>ToShare</title>
+</head>
+<body>
+<div th:replace="~{toshare/main::topbar}"></div>
+
+<div class="container mt-2 ">
+    <div class="detail-article-container row">
+        <div class="article-content col-md-8 offset-1 mt-5">
+            <h1 th:text="${postDetails.getTitle()}"></h1>
+            <div class="article-meta mb-3">
+                <span th:text="${postDetails.getAuthor()}"></span>
+                <span th:text="${#dates.format(postDetails.getUpdate_time(), 'yyyy-MM-dd HH:mm:ss')}"></span>
+            </div>
+            <article th:utext="${postDetails.getHtml()}"></article>
+
+            <script th:src="@{/js/article.js}"></script>
+
+            <div class="content-action mt-4 mb-3" th:id="${followNum}+'_'+${likeNum}+'_'+${favoriteNum}" th:name="${postDetails.getAuthor()}" th:value="${session.sessionUser?.getUsername()}">
+                <div class="action-list">
+                    <input th:class="${favoriteState}" th:id="${postDetails.getPost_id()}" type="hidden" th:name="${likeState}" th:value="${session.sessionUser?.getUid()}">
+                    <div class="action-item-like">
+                        <i class="bui-icon far fa-heart"></i>
+                        <span>like</span>
+                    </div>
+                    <div class="action-item-liked">
+                        <i class="bui-icon fas fa-heart"></i>
+                        <span>like</span>
+                    </div>
+                    <div class="action-item-favorite">
+                        <i class="bui-icon far fa-star"></i>
+                        <span>favorite</span>
+                    </div>
+                    <div class="action-item-favorited">
+                        <i class="bui-icon fas fa-star"></i>
+                        <span>favorite</span>
+                    </div>
+                </div>
+            </div>
+            <div id="comment-area" class="mt-4">
+                <div class="common">
+                    <div class="com-head mb-3">
+                        <span class="head-top results" th:text="${commentCount}">1830</span>
+                        <span class="head-top">comment</span>
+                    </div>
+                    <div class="comment mt-4">
+                        <div class="user-comment">
+                            <div class="comment-send no-login">
+                                <div class="user-face ml-2 mt-4" style="float: left">
+                                    <img class="user-head" th:src="@{/images/person-circle.svg}" alt="user-head" style="height: 32px">
+                                </div>
+                                <div class="textarea-container">
+                                    <input type="hidden" name="author" th:value="${postDetails.getAuthor()}">
+                                    <input type="hidden" name="authorno" th:value="${postDetails.getUserno()}">
+                                    <input type="hidden" name="username" th:value="${session.sessionUser?.getUsername()}">
+                                    <input type="hidden" name="post_id" th:value="${postDetails.getPost_id()}">
+                                    <input type="hidden" name="userno" th:value="${session.sessionUser?.getUserno()}">
+                                    <input type="hidden" name="parent_id" value="-1">
+                                    <input type="hidden" name="pname" value=null>
+                                    <input type="hidden" name="pno" value=null>
+                                    <div class="baffle-wrap">
+                                        <div class="baffle">You must<a class="btn-login-modal">login</a>to post a comment.
+                                        </div>
+                                    </div>
+                                    <textarea name="content" cols="95" rows="5" placeholder="comment..."></textarea>
+                                    <button style="position: absolute" type="button" class="btn btn-primary btn-send ml-3 mt-4" disabled>send</button>
+                                </div>
+                                <div class="emoji-box"></div>
+                            </div>
+                            <div id="comment-list" class="mt-4 pt-3 mb-5">
+                                <div th:fragment="commentList" class="list-item reply-wrap" th:each="comment:${comments}">
+                                    <div class="user-face mt-lg-3" style="float: left">
+                                        <a th:href="@{/user/{no}(no=${comment.getUserno()})}" target="_blank">
+                                            <div>
+                                                <img th:src="@{/images/3342271.svg}" style="height: 48px">
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="con mr-1">
+                                        <div class="user">
+                                            <a th:href="@{/user/{no}(no=${comment.getUserno()})}" target="_blank" class="name" th:text="${comment.getUsername()}">user1</a>
+                                            <span class="isAuthorComment" th:if="${comment.getAuthor_comment()} eq 1">author</span>
+                                        </div>
+                                        <p class="text mb-0" th:text="${comment.getContent()}">comment.</p>
+                                        <div class="info">
+                                            <span class="time" th:text="${#dates.format(comment.getCreate_time(), 'yyyy-MM-dd HH:mm')}">time</span>
+                                            <span class="reply btn-hover btn-highlight"
+                                            th:attr="data-cid=${comment.getCid()},data-replyname=${comment.getUsername()},data-pno=${comment.getUserno()}">reply</span>
+                                        </div>
+                                        <div class="reply-box" th:unless="${#arrays.isEmpty(comment.getReplyComments())}" th:each="reply:${comment.getReplyComments()}">
+                                            <div class="reply-item reply-wrap" data-id="4414364138" data-index="0">
+                                                <div class="reply-con">
+                                                    <a th:href="@{/user/{no}(no=${reply.getUserno()})}" target="_blank"
+                                                       class="reply-face" style="top:0">
+                                                        <img th:src="@{/images/3342271.svg}" style="height: 24px" alt="">
+                                                    </a>
+                                                    <div class="user">
+                                                        <a th:href="@{/user/{no}(no=${reply.getUserno()})}" target="_blank"
+                                                          th:text="${reply.getUsername()}" class="name">username</a>
+                                                        <span class="isAuthorComment" th:if="${reply.getAuthor_comment() eq 1}">author</span>
+                                                        <span class="text-con" th:unless="${reply.getPname() eq null}" th:value="${reply.getPname()}">reply<a th:href="@{/user/{no}(no=${reply.getPno()})}" th:text="| @${reply.getPname()} |"></a></span>
+                                                        <span class="text-con" th:text="':'+${reply.getContent()}">reply</span>
+                                                    </div>
+                                                    <div class="info">
+                                                        <span class="time" th:text="${#dates.format(reply.getCreate_time(), 'yyyy-MM-dd HH:mm')}">reply time</span>
+                                                        <span class="reply btn-hover"
+                                                              th:attr="data-cid=${reply.getCid()},data-replyname=${reply.getUsername()},data-pname=${reply.getUsername()},data-pno=${reply.getUserno()}">reply</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="media-info-wrapper col-3 mt-5">
+            <div class="media-info">
+                <div class="user-info">
+                    <a class="user-avatar" href="#" th:href="@{/user/{no}(no=${postDetails.getUserno()})}" target="_blank" rel="noopener noreferrer">
+                        <img th:src="@{/images/3342271.svg}" alt="user-icon" style="max-width: 70px; max-height: 70px">
+                    </a>
+                    <div class="user-name">
+                        <a class="name" target="_blank" rel="noopener noreferrer" href="#" th:href="@{/user/{no}(no=${postDetails.getUserno()})}" th:text="${postDetails.author}"></a>
+                        <div><span id="follow-num"></span></div>
+                        <div id="action-follow" class="">
+                            <i class="bui-icon"></i>
+                            <input id="userid" type="hidden" th:name="${followState}" th:value="${session.sessionUser?.getUid()}">
+                            <span id="follow">follow</span>
+                        </div>
+                        <div id="action-followed" class="">
+                            <span id="following">following</span>
+                            <div class="followed">
+                                <ul class="follow_dropdown">
+                                    <li>cancel</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <ul class="tool-container">
+                    <li class="tool-item">
+                    <img th:src="@{/images/arrow-up-square.svg}" alt="" width="32" height="32" title="Top">
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div th:fragment="loginModal" class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <span>Go to Login page to continue?</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a th:href="@{/user/login}" target="_blank" type="button" class="btn btn-primary">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

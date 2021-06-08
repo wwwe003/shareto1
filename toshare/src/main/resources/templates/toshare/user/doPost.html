@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/login.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/managePost.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/doPost.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/editormd/css/editormd.css}">
+
+    <title>managePost</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav" th:fragment="topbar">
+    <a class=" mb-0 ml-5 logo" th:href="@{/main}">ToShare</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="container">
+        <div class="collapse navbar-collapse col-11 " id="navbarNav1">
+            <form class="form-inline col-9 offset-3" method="post" th:action="@{/search}">
+                <div class="input-group w-75 ml-2">
+                    <select id="inputState" name="limit" class="form-control input-group w-20">
+                        <option selected>content</option>
+                        <option>title</option>
+                        <option>author</option>
+                    </select>
+                    <input name="keyword" class="form-control mr-2 w-50" type="text"  placeholder="search article" aria-label="Text input with segmented dropdown button">
+                    <button class="btn btn-outline-success" type="submit">search</button>
+                </div>
+                <!--                    <input type="hidden" name="searchType" value="">-->
+                <!--                    <input type="hidden" name="op" value="search">-->
+            </form>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav2">
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img th:src="@{/images/person-circle.svg}" width="32" height="32" th:title="${session.sessionUser.getUsername()}"></a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item"  href="#" th:href="@{/user/{no}(no=${session.sessionUser?.getUserno()})}" target="_blank">My Page</a>
+                <a class="dropdown-item" th:href="@{/user/password}">Modify Password</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" th:href="@{/user/logout}">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<nav class="navbar bg-dark">
+    <div class="container">
+        <form class="form-inline row">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button id="btn-manage" type="button" class="btn btn-info" th:value="${session.sessionUser.getUsername()}">Posted Article</button>
+                <button type="button" class="btn btn-info active" disabled>Post</button>
+            </div>
+<!--            <div class="ml-3">-->
+<!--                <button type="button" class="btn btn-info">Drafts</button>-->
+<!--                <button type="button" class="btn btn-info">Trash</button>-->
+<!--            </div>-->
+        </form>
+    </div>
+</nav>
+<div class="container post-type mt-5 bg-light">
+    <div class="row justify-content-center">
+        <div class="col-9">
+<!--            back end validate error message(only js invalid) -->
+            <div class="text-left" th:each="entry:${errmsg}">
+                <span class="errmsg text-danger"  th:text="'*'+' '+${entry.value}"></span>
+            </div>
+            <form id="form-post" class="mt-3 mb-3 form-row mb-2 mt-2 mr-1" method="post" th:action="@{/{username}/postArticle(username=${session.sessionUser.getUsername()})}">
+                <input type="hidden" name="draft">
+                <input type="hidden" name="state">
+                <input type="hidden" name="pid" th:value="${editPost?.getPost_id()}">
+                <div class="input-group-prepend col-1">
+                    <span class="input-group-text" id="inputGroup-sizing">Title</span>
+                </div>
+                <input th:value="${editPost?.getTitle()}" name="title" type="text" class="form-control col-11 shadow-sm" aria-label="Title" aria-describedby="inputGroup-sizing-sm">
+                <div id="md-content" class="input-group mb-3 mt-3">
+                    <textarea id="markdown_area" name="markdown" class="form-control ml-1" aria-label="With textarea" placeholder="content" style="display: none" th:text="${editPost?.getMarkdown()}"></textarea>
+                </div>
+                <div id="md-description" class="input-group mb-1 mt-3">
+                    <textarea th:text="${editPost?.getDescription()}" maxlength="" class="form-control description" aria-label="With textarea" name="description" placeholder="description"></textarea>
+                </div>
+                <div class="form-group w-100 mb-0 row justify-content-end">
+                    <p><span id="text-count">120</span>/120</p>
+                </div>
+                <div class="form-group">
+                    <span id="btn-setType">set type</span>
+                </div>
+                <div class="form-group col-3 shadow-sm p-0 mr-3">
+                    <select id="inputType1" class="form-control" name="type_first_name">
+                        <option selected>Type1</option>
+                        <option th:each="type1:${typeFirsts}" th:text="${type1.getType_first_name()}"
+                                th:selected="${type1.getType_first_id()==editPost?.getType()}">
+                    </select>
+                </div>
+                <div class="form-group col-3 shadow-sm p-0">
+                    <select id="inputType2" class="form-control" name="type_second_name">
+                        <option selected th:text="${editPost==null}?'Type2':${editPost.getType_second_name()}" >Type2</option>
+                    </select>
+                </div>
+                <div id="check-bar" class="form-group col-9">
+                    <div class="form-check form-check-inline mr-4">
+                        <input  th:attr="checked=${editPost?.getAllow_chat()==1}?true:false" class="form-check-input" name="allowChat" type="checkbox" id="inlineCheckbox1" value="1">
+                        <label class="form-check-label" for="inlineCheckbox1">allow chat</label>
+                    </div>
+                    <div class="form-check form-check-inline mr-4">
+                        <input th:attr="checked=${editPost?.getAllow_top()==1}?true:false" class="form-check-input" name="allowTop" type="checkbox" id="inlineCheckbox2" value="1">
+                        <label class="form-check-label" for="inlineCheckbox2">allow top</label>
+                    </div>
+                </div>
+
+                <div class="form-group w-100 ml-1 mt-4" th:if="${#strings.isEmpty(scan)}">
+                    <div class="form-group row justify-content-sm-end">
+                        <button id="btn-return" type="button" class="btn btn-secondary mr-4" data-toggle="modal" data-target="#returnModal">return</button>
+                        <button id="btn-save" type="button" class="btn btn-success mr-1">save</button>
+                        <button id="btn-post" type="button" class="btn btn-primary mr-3">post</button>
+                        <div class="modal fade" id="returnModal" tabindex="-1" role="dialog" aria-labelledby="returnModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">return</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        return to previous page<span id="saveTip">&nbsp;(article has not been saved)</span>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button id="btn-return-modal" type="button" class="btn btn-primary">return</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                save post confirmModal-->
+                <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">confirm</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Confirm to continue(before continue please check once more).
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="confirm" type="submit" class="btn btn-primary">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/user/doPost.js}"></script>
+<script th:src="@{/editormd/editormd.min.js}"></script>
+<script th:src="@{/editormd/languages/en.js}"></script>
+
+<script type="text/javascript">
+    let testEditor;
+    $(function() {
+        testEditor = editormd("md-content",{
+            width: "100%",
+            height: 640,
+            syncScrolling: "single",
+            path: "../../editormd/lib/"
+        });
+    });
+</script>
+</body>
+</html>

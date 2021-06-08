@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/login.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    <script th:src="@{https://use.fontawesome.com/releases/v5.15.1/js/all.js}" data-auto-replace-svg="nest"></script>
+    <script th:src="@{/js/main.js}"></script>
+
+    <title>ToShare</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class=" mb-0 ml-5 logo" th:href="@{/main}" >ToShare</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-lg-end" id="navbarNav1">
+        <form class="form-inline mx-lg-5" style="width: 50%">
+
+            <input class="form-control mr-sm-2 " style="width: 70%" type="text"  placeholder="Search" aria-label="Text input with segmented dropdown button">
+
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+    <div class="collapse navbar-collapse justify-content-sm-center" id="navbarNav2">
+
+        <div class="dropdown" >
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user-circle fa-2x"></i></a>
+
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" th:href="@{/user/{no}(no=${session.sessionUser?.getUserno()})}" target="_blank">My Page</a>
+                <a class="dropdown-item" href="#">Modify Password</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+
+<form  method="post">
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <p style="color: red" th:text="${failMsg}" th:if="${not #strings.isEmpty(failMsg)}"></p>
+            <p style="color: blue" th:text="${successMsg}" th:if="${not #strings.isEmpty(successMsg)}"></p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="form-group  w-50">
+                <label for="password">現在のパスワード</label>
+                <input type="password" class="form-control" name="password" id="password">
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="form-group justify-content-center w-50">
+                <label for="newPwd">新しいパスワード</label>
+                <input type="password" class="form-control" name="newPwd" id="newPwd">
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <button type="submit" class="btn btn-primary">変更</button>
+        </div>
+
+    </div>
+</form>
+</body>
+</html>

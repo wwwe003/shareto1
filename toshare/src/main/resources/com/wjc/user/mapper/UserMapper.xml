@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wjc.user.mapper.UserMapper">
+    <insert id="save" parameterType="User">
+        insert into t_user values (#{uid},#{username},#{password},#{email},#{userno},0,0,#{registdate},#{salt},#{role})
+    </insert>
+
+    <select id="findUserByName" parameterType="java.lang.String" resultType="user">
+        select * from t_user where username=#{username}
+    </select>
+    <select id="ajaxValidateUsername" resultType="java.lang.Integer">
+        select count(1) from t_user where username=#{username}
+    </select>
+
+    <select id="ajaxValidateEmail" resultType="java.lang.Integer">
+        select count(1) from t_user where email=#{email}
+    </select>
+
+    <select id="findMaxUserNo" resultType="java.lang.Integer">
+        select userno from t_user order by registdate DESC limit 1
+    </select>
+
+    <select id="findByUsernameAndPassword" resultType="user">
+        select * from t_user where username=#{username} and password=#{password}
+    </select>
+
+    <select id="findUidByUsername" parameterType="java.lang.String" resultType="User">
+        select * from t_user where username=#{author}
+    </select>
+
+    <select id="findUserByUid" parameterType="java.lang.String" resultType="User">
+        select * from t_user where uid=#{uid}
+    </select>
+
+    <select id="findByUidAndPassword" resultType="java.lang.Integer">
+        select count(1) from t_user where uid=#{uid} and password=#{password}
+    </select>
+    
+    <update id="updatePassword">
+        update t_user set password=#{password} where uid=#{uid}
+    </update>
+
+    <update id="updateFollowerNum">
+        update t_user set followernum=#{followernum} where uid=#{uid}
+    </update>
+
+    <select id="updateFollowNum">
+        update t_user set follownum=#{follownum} where uid=#{uid}
+    </select>
+
+    <select id="findFollowNumByAuthor" resultType="java.lang.Integer">
+        select followernum from t_user where username=#{author}
+    </select>
+    
+    
+    <select id="findUidByUserNo" parameterType="java.lang.String" resultType="java.lang.String">
+        select uid from t_user where userno=#{userno}
+    </select>
+    <select id="findFollowingUser" resultType="User">
+        select username,userno,followernum,follownum
+        from t_user u ,t_follow f
+        where u.uid=f.follow_uid and follower_uid=#{follower_uid}
+        order by update_time
+        DESC limit #{pageCode},#{pageSize}
+    </select>
+    <select id="findFollowerUser" resultType="User">
+        select username,userno,followernum,follownum from t_user u ,t_follow f where u.uid=f.follower_uid and follow_uid=#{follow_uid} order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <select id="findTotalFollowerRecords" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_follow where follow_uid=#{uid}
+    </select>
+
+    <select id="findTotalFollowingRecords" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_follow where follower_uid=#{uid}
+    </select>
+    <select id="findFollowingUsername" parameterType="java.lang.String" resultType="java.lang.String">
+        select username from t_user u ,t_follow f where u.uid=f.follow_uid and follower_uid=#{uid}
+    </select>
+
+</mapper>

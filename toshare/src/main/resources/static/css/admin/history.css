@@ -1,0 +1,52 @@
+.sidebar li a{
+    /*margin: 0 1rem;*/
+    padding: 1rem 2rem;
+    color: rgba(255,255,255,.5);
+}
+.sidebar li{
+    border-left: 4px solid #393D49
+}
+
+.sidebar li.active{
+    border-left-color: #20c997;
+}
+
+.sidebar .parent:hover{
+    border-left: 4px solid #20c997;
+    background  : #5b5b5b;
+
+}
+.sidebar li a.active{
+    color: white;
+}
+
+
+.sidebar li a:hover{
+    color: white;
+}
+
+.nav-item.children{
+    padding-left: 1rem;
+    border-left-color: #212529;
+    background-color: #212529
+}
+.nav-item.children:hover{
+    background  : #5b5b5b;
+    border-left-color: #5b5b5b;
+}
+
+.nav-item.children a.active{
+    color: white;
+}
+
+#main .history-article{
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #212529
+}
+/*h4 .updateTime{*/
+/*    float: end;*/
+/*    font-size: 18px;*/
+/*}*/
+h5 .operation{
+    font-weight: bold;
+}

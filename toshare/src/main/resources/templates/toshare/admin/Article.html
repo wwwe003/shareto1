@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/Article.css}">
+    <title>Review article</title>
+</head>
+<body>
+<div th:replace="~{toshare/admin/adminArticles::topbar}"></div>
+<div class="container post-type mt-5 bg-light">
+    <div class="row justify-content-center">
+        <div class="col-11">
+            <form id="form-post" class="mt-3 mb-3 form-row mb-2 mt-2 mr-1 justify-content-center" method="post" th:action="@{/admin/review/result}">
+                <input type="hidden" name="post_id" th:value="${ReviewArticle.getPost_id()}">
+                <input type="hidden" name="author" th:value="${ReviewArticle.getAuthor()}">
+                <input type="hidden" name="title" th:value="${ReviewArticle.getTitle()}">
+                <input type="hidden" name="delete">
+                <input type="hidden" name="pass">
+                <input type="hidden" name="reason">
+                <input type="hidden" name="passed_article" th:value="${ReviewArticle.getState()==2}?1:0">
+                <input type="hidden" name="adminname" th:value="${session.sessionAdmin.getAdminname()}">
+
+                <div class="input-group col-11 mt-1">
+                    <div class="input-group-prepend col-2 pr-0" >
+                        <span class="input-group-text">Title</span>
+                    </div>
+                    <div class="input-group col-10 pl-0 " >
+                        <span th:text="${ReviewArticle?.getTitle()}" id="title" type="text" class="form-control shadow-sm"></span>
+                    </div>
+                </div>
+                <div class="input-group col-11 mt-1">
+                    <div class="input-group-prepend col-2 pr-0" >
+                        <span class="input-group-text" >Author</span>
+                    </div>
+                    <div class="input-group col-10 pl-0 " >
+                        <span th:text="${ReviewArticle?.getAuthor()}" id="author" type="text" class="form-control shadow-sm"></span>
+                    </div>
+                </div>
+                <div class="input-group col-11 mt-1">
+                    <div class="input-group-prepend col-2 pr-0" >
+                        <span class="input-group-text" >Post time</span>
+                    </div>
+                    <div class="input-group col-10 pl-0 " >
+                        <span th:text="${#dates.format(ReviewArticle.getUpdate_time(), 'yyyy-MM-dd HH:mm:ss')}" id="time" type="text" class="form-control shadow-sm"></span>
+                    </div>
+                </div>
+                <div class="input-group col-11 mt-1">
+                    <div class="input-group-prepend col-2 pr-0" >
+                        <span class="input-group-text" >Type</span>
+                    </div>
+                    <div class="input-group col-10 pl-0 " >
+                        <span th:text="${ReviewArticle.getType_first_name()}+'('+${ReviewArticle.getType_second_name()}+')'" id="supertype" type="text" class="form-control shadow-sm"></span>
+                    </div>
+                </div>
+                <div class="input-group col-11 mt-1">
+                    <div class="input-group-prepend col-2 pr-0" >
+                        <span class="input-group-text" >Description</span>
+                    </div>
+                    <div class="input-group col-10 pl-0" >
+                        <textarea disabled th:text="${ReviewArticle?.getDescription()}" class="form-control shadow-sm description" id="description"></textarea>
+                    </div>
+                </div>
+                <div class="col-11 mt-5 " style="border: 2px solid #212529">
+                    <article th:utext="${ReviewArticle.getHtml()}" class=" content" id="html"></article>
+                </div>
+
+
+                <div class="form-group w-100 ml-1 mt-4">
+                    <div class="form-group row justify-content-sm-end mr-5">
+                        <button id="btn-return" type="button" class="btn btn-secondary mr-5" data-toggle="modal" data-target="#returnModal">return</button>
+                        <button id="btn-change" type="button" class="btn btn-outline-info ml-3 mr-2" data-toggle="modal" data-target="#changeModal">change type</button>
+                        <button th:if="${#strings.isEmpty(reviewAgain)}" type="button" class="btn btn-primary ml-3 mr-2" data-toggle="modal" data-target="#passModal">pass</button>
+                        <button type="button" class="btn btn-warning mr-2" data-toggle="modal" data-target="#nopassModal">no pass</button>
+                        <button type="button" class="btn btn-danger mr-2" data-toggle="modal" data-target="#deleteModal">delete</button>
+
+<!--                        modal group-->
+                        <div class="modal fade" id="returnModal" tabindex="-1" role="dialog" aria-labelledby="returnModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="returnModalLabel">return</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        return to previous page<span id="saveTip">&nbsp;(review has not been finished)</span>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <a id="btn-return-modal" type="button" th:href="@{/admin/review}" class="btn btn-primary">return</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="passModal" tabindex="-1" role="dialog" aria-labelledby="passModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="passModalLabel">Pass</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure to pass this article?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button id="btn-pass" type="button"  class="btn btn-primary">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="nopassModal" tabindex="-1" role="dialog" aria-labelledby="nopassModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="nopassModalLabel">No pass</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                       Don't pass this article?
+                                        <div id="nopass-reason" class="input-group mb-1 mt-3">
+                                            <textarea maxlength="" class="form-control nopass-reason" name="nopassReason" aria-label="With textarea" placeholder="no pass reason"></textarea>
+                                        </div>
+                                        <div class="form-group w-100 mb-0 row justify-content-end">
+                                            <p><span class="text-count">60</span>/60</p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button id="btn-no" type="button" class="btn btn-primary">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel">Delete</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Delete this article?
+                                        <div id="delete-reason" class="input-group mb-1 mt-3">
+                                            <textarea maxlength="" class="form-control delete-reason" aria-label="With textarea" name="deleteReason" placeholder="delete reason"></textarea>
+                                        </div>
+                                        <div class="form-group w-100 mb-0 row justify-content-end">
+                                            <p><span class="text-count">60</span>/60</p>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button id="btn-delete" type="button" class="btn btn-primary">Confirm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <div class="col-1">
+            <div class="toolbar">
+                <ul class="tool-container">
+                    <li class="tool-item">
+                        <img th:src="@{/images/arrow-up-square.svg}" alt="" width="32" height="32" title="Top">
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form method="post" th:action="@{/admin/changeType}">
+                        <input id="pid" type="hidden" th:attr="data-pid=${ReviewArticle.getPost_id()}">
+<!--                        <input type="hidden" name="supertype_old" th:value="${ReviewArticle.getType_first_name()}">-->
+<!--                        <input type="hidden" name="subtype_old" th:value="${ReviewArticle.getType_second_name()}">-->
+                        <input type="hidden" name="author">
+                        <input type="hidden" name="title">
+                        <input type="hidden" name="oldtype">
+                        <input type="hidden" name="passed_article">
+                        <input type="hidden" name="adminname" th:value="${session.sessionAdmin.getAdminname()}">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Edit type</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <input type="hidden" name="post_id">
+                                <label for="inputType1" class="col-form-label">supertype:</label>
+                                <select id="inputType1" class="form-control" name="supertype">
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputType2" class="col-form-label">subtype:</label>
+                                <select id="inputType2" class="form-control" name="subtype">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button  type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button id="save-edit" type="submit" class="btn btn-primary">Save edit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin/Article.js}"></script>
+<script th:src="@{/js/utils/changeType.js}"></script>
+</body>
+</html>

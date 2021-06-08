@@ -1,0 +1,9 @@
+.activeB{
+    border-bottom: 4px solid #20c997;
+}
+.nav-item.top{
+    margin-right: 1.5rem
+}
+.nav-item.top:hover{
+    border-bottom: 4px solid #20c997;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/adminArticles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/history.css}">
+    <title>Article History</title>
+</head>
+<body>
+<div th:replace="~{toshare/admin/adminArticles::topbar}"></div>
+<div class="container">
+    <div class="row">
+        <nav th:fragment="sidebar" id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar">
+            <div  class="sidebar-sticky pt-3">
+                <ul class=" nav flex-column" style=" font-size: 1.25rem">
+                    <li id="article-history" class="nav-item parent">
+                        <a class="nav-link" href="#" th:href="@{/admin/history}">article</a>
+                    </li>
+                    <li id="type-history" class="nav-item parent">
+                        <a class="nav-link" href="#" th:href="@{/admin/history_type}">type</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="main" class="col-10 offset-2 mt-5" th:attr="data-pageCode=${historyMessages.getPageCode()},data-pageSize=${historyMessages.getPageSize()}
+                 ,data-totalRecord=${historyMessages.getTotalRecord()}">
+            <div class="input-group history-article col-11 mt-1"
+                 th:each="message:${historyMessages.getBeanList()}">
+                <div th:utext="${message}"></div>
+            </div>
+            <div class="pagination">
+                <nav aria-label="..." >
+                    <ul class="pagination" id="pageUL">
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin/history.js}"></script>
+<script th:src="@{/js/utils/pagination.js}"></script>
+<script th:src="@{/js/utils/search.js}"></script>
+</body>
+</html>

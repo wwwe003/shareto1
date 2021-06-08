@@ -1,0 +1,54 @@
+#navbarNav2{
+    margin-right: 100px;
+    padding-right: 50px;
+}
+
+.edit-button{
+    width: 60px;
+    }
+.delete-button{
+    width: 60px;
+}
+.scan-button{
+    width: 60px;
+}
+#btn-check {
+    border: 1px solid #007bff;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    display: inline-block;
+    font-weight: 400;
+    color: #fff;
+    background-color: #007bff;
+    cursor: pointer;
+}
+#btn-check:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+#pagination{
+    margin-top: 40px;
+}
+.addCursor {
+    cursor: pointer;
+}
+#totalPost{
+    margin-bottom: 10px;
+    display: inline-block;
+    float: right;
+}
+#totalPost span{
+    display: inline-block;
+    font-size: 20px;
+    color:#ffc504;
+}
+#totalPost p{
+    display: inline-block;
+    font-size: 18px;
+}
+h5 .operation{
+    font-weight: bold;
+}

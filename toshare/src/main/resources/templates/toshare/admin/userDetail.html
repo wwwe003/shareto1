@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/userList.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/userDetail.css}">
+    <title>Detail</title>
+</head>
+<body>
+<div th:replace="~{toshare/admin/adminArticles::topbar}"></div>
+
+<div class="container post-type mt-5 bg-light">
+    <div class="row justify-content-center">
+        <div class="col-4 mt-3 mb-3">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top mt-4" th:src="@{/images/3342271.svg}" alt="" style="height: 128px">
+                <div class="card-body">
+                    <h5  class="card-title text-center" th:text="${userDetail.getUsername()}"></h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:text="'userid: '+${userDetail.getUid()}"></li>
+                    <li class="list-group-item" th:text="'email: '+${userDetail.getEmail()}"></li>
+                    <li id="userno" class="list-group-item" th:text="'userno: '+${userDetail.getUserno()}"></li>
+                    <li class="list-group-item" th:text="'email: '+${userDetail.getEmail()}"></li>
+                    <li class="list-group-item" th:text="'following: '+${userDetail.getFollownum()}"></li>
+                    <li class="list-group-item" th:text="'follower: '+${userDetail.getFollowernum()}"></li>
+                </ul>
+                <div class="card-body">
+                    <input type="hidden" th:attr="data-pageCode=${postedArticles.getPageCode()},data-PageSize=${postedArticles.getPageSize()},data-totalRecord=${postedArticles.getTotalRecord()}">
+                    <a th:href="@{/admin/detail/{uno}(uno=${userDetail.getUserno()})}" class="card-link active" th:text="'posted: '+${userDetail.getPostedCount()}"></a>
+                    <a class="card-link ajax-review ml-0" th:text="'under review: '+${userDetail.getUnderReviewCount()}"></a>
+                    <a class="card-link ajax-fav ml-0" th:text="'favorite: '+${favoriteCount}"></a>
+                </div>
+            </div>
+        </div>
+        <div class="col-7" id="postList">
+            <div class="post-header">
+                <p>Posted Articles</p>
+            </div>
+            <div class="postedArticles noresult" th:if="${userDetail.getPostedCount()} eq 0">
+                <p>No result</p>
+            </div>
+            <div id="postedArticles">
+                <div class="postedArticles" th:each="article:${postedArticles.getBeanList()}">
+                    <div class="_title">
+                        <a th:href="@{/{pid}(pid=${article.getPost_id()})}" target="_blank">
+                            <p th:text="${article.getTitle()}"></p>
+                        </a>
+                    </div>
+                    <div class="_footer">
+                        <span class="postDate" th:text="'posted in: '+${#dates.format(article.getUpdate_time(), 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        <span class="like" th:text="'favorite: '+${article.getFavorites()}"></span>
+                        <span class="like" th:text="'like: '+${article.getLikes()}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pagination">
+                <nav aria-label="...">
+                    <ul class="pagination justify-content-center" id="pageUL">
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/utils/pagination.js}"></script>
+<script th:src="@{/js/admin/userDetail.js}"></script>
+<script th:src="@{/js/utils/search.js}"></script>
+</body>
+</html>

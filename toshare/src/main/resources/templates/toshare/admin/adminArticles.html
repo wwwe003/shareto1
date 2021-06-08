@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/adminArticles.css}">
+    <title>Article manage</title>
+</head>
+<body>
+<nav th:fragment="topbar" class="navbar navbar-expand-lg navbar-dark bg-dark  flex-md-nowrap sticky-top">
+    <a class="navbar-brand" id="brand" th:href="@{/admin/dashboard}">back end</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown" style="font-size: 18px;margin-left: 3rem">
+        <ul class="navbar-nav">
+            <li class="nav-item top " id="home">
+                <a class="nav-link" th:href="@{/admin/dashboard}">Type</a>
+            </li>
+            <li class="nav-item top" id="article">
+                <a class="nav-link" th:href="@{/admin/article}">Article</a>
+            </li>
+            <li class="nav-item top" id="user">
+                <a class="nav-link" href="#" th:href="@{/admin/user}">User</a>
+            </li>
+            <li class="nav-item top" id=history>
+                <a class="nav-link" href="#" th:href="@{/admin/history}">History</a>
+            </li>
+            <li class="nav-item top dropdown" id="review">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Review
+                </a>
+                <div class="dropdown-menu bg-info" aria-labelledby="navbarDropdownMenuLink">
+                    <a id="review-article" class="dropdown-item" th:href="@{/admin/review}">Article</a>
+                </div>
+            </li>
+        </ul>
+        <div class="container">
+            <div class=" navbar-collapse" id="search">
+                <form class="form-inline col-12" method="post" th:action="@{/search}">
+                    <div class="input-group w-100 ml-2">
+                        <select id="inputState" name="limit" class="form-control input-group">
+                            <option selected>content</option>
+                            <option>title</option>
+                            <option>author</option>
+                        </select>
+                        <input id="keyword" class="form-control mr-2 w-50" type="text"  placeholder="search article" aria-label="Text input with segmented dropdown button">
+                        <button id="searchButton" class="btn btn-outline-success" type="button">search</button>
+                    </div>
+                    <!--                    <input type="hidden" name="searchType" value="">-->
+                    <!--                    <input type="hidden" name="op" value="search">-->
+                </form>
+            </div>
+        </div>
+        <ul class="navbar-nav ml-auto" style="padding-right: 3rem">
+            <li class=" dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                th:text="${session.sessionAdmin.getAdminname()}" style="color: white">
+                </a>
+                <div class="dropdown-menu bg-info" aria-labelledby="adminMenuLink">
+                    <a class="dropdown-item" href="#" th:href="@{/admin/logout}" >Log out</a>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+<div class="container">
+    <div class="row">
+        <nav th:fragment="sidebar" id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar mb-lg-5">
+            <div class="sidebar-sticky pt-3 mb-5">
+                <ul class="nav flex-column mb-5" style="font-size:1.25rem">
+<!--                    <li class="nav-item parent" ></li>-->
+                    <li class="nav-item parent" th:each="supertype,stat:${allType}">
+                        <img th:unless="${#arrays.isEmpty(stat.current.value)}" th:src="@{/images/caret-down-fill.svg}" class="caret" alt="">
+                        <a class="nav-link supertype" href="" onclick="return false;" th:text="${stat.current.key.getType_first_name()}+'('+${stat.current.key.getCount()}+')'"></a>
+                        <dl>
+                           <dd class="nav-item children" th:each="item:${stat.current.value}">
+                               <a class="nav-link" href="" onclick="return false;" th:text="${item.getType_second_name()}+'('+${item.getCount()}+')'"></a>
+                           </dd>
+                       </dl>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="main" class="col-11 offset-2 mt-5">
+            <div class="alert alert-danger alert-dismissible"  th:unless="${#strings.isEmpty(nullNameMsg)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>warning</strong>&nbsp;&nbsp;[[${nullNameMsg}]]
+            </div>
+            <div class="alert alert-success alert-dismissible"  th:unless="${#strings.isEmpty(message_0)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong th:text="${message_0}"></strong>&nbsp;&nbsp;[[${message_tip}]]
+            </div>
+            <div class="alert alert-danger alert-dismissible"  th:unless="${#strings.isEmpty(message_1)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong th:text="${message_1}"></strong>&nbsp;&nbsp;[[${message_tip}]]
+            </div>
+            <div id="totalPost"><p>total:&nbsp;</p><span th:text="${postsBySubtypeID.totalRecord}"></span><p>&nbsp;post</p></div>
+            <table class="table table-hover table-bordered" id="showTable">
+                <thead>
+                <tr >
+                    <th>#</th>
+                    <th>title</th>
+                    <th>author</th>
+                    <th>type</th>
+                    <th>update time</th>
+                    <th>more</th>
+                </tr>
+                </thead>
+                <tbody id="showPost" th:attr="data-PageSize=${postsBySubtypeID.getPageSize()},data-totalRecord=${postsBySubtypeID.totalRecord}">
+                <tr th:each="myPost:${postsBySubtypeID.getBeanList()}">
+                    <td th:text="${myPostStat.index+1}+(${postsBySubtypeID.getPageCode()-1}*2)"></td>
+                    <td class="td_title" th:attr="data-pid=${myPost.getPost_id()}" th:text="${myPost.getTitle()}"></td>
+                    <td class="td_author" th:text="${myPost.getAuthor()}"></td>
+                    <td class="typeID" th:attr="data-supertypeID=${myPost.getType()},data-subtypeID=${myPost.getType_second_id()}"
+                            th:text="${myPost.getType_first_name()}+'('+${myPost.getType_second_name()}+')'"></td>
+                    <td th:text="${myPost.getUpdate_time()==null}?${#dates.format(myPost.getCreate_time(), 'yyyy-MM-dd HH:mm:ss')}:${#dates.format(myPost.getUpdate_time(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-primary change-button">Change type</a>
+                        <a class="btn btn-sm btn-danger review-button" th:href="@{/admin/review/{pid}(pid=${myPost.getPost_id()},mode='review')}">Review again</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="pagination">
+                <nav aria-label="...">
+                    <ul class="pagination justify-content-center" id="pageUL">
+                    </ul>
+                </nav>
+            </div>
+<!--            <table class="table table-hover table-bordered mb-5" th:each="subtype,stat:${allType}">-->
+<!--                <tbody id="showType">-->
+<!--                <tr>-->
+<!--                    <td style="width: 90px;color: #ffc84d">supertype</td>-->
+<!--                    <td style="width: 120px;font-weight: bold" th:text="${stat.current.key}"></td>-->
+<!--                    <td style="width: 150px;text-align: center">-->
+<!--                        <a class="btn btn-sm btn-info custom-button" th:href="@{/admin/type/addSubtype(typeName=${stat.current.key})}">Add</a>-->
+<!--                        <a onclick="showName(this)" class="btn btn-sm btn-primary custom-button" th:attr="data-name=${stat.current.key},data-id=1" data-toggle="modal" data-target="#editModal">Edit</a>-->
+<!--                        <a onclick="deleteType(this)" class="btn btn-sm btn-danger custom-button" th:attr="data-name=${stat.current.key},data-type=1" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
+<!--&lt;!&ndash;                        th:href="@{/admin/type/editSupertype(typeName=${stat.current.key})}"&ndash;&gt;-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                    <tr th:each="item:${stat.current.value}">-->
+<!--                        <td style="width: 90px;color: #00c4ff">subtype</td>-->
+<!--                        <td style="width: 120px" th:text="${item}"></td>-->
+<!--                        <td style="width: 150px;text-align: center">-->
+<!--                            <a onclick="showName(this)" class="btn btn-sm btn-primary custom-button" th:attr="data-name=${item},data-id=2" data-toggle="modal" data-target="#editModal">Edit</a>-->
+<!--                            <a onclick="deleteType(this)" class="btn btn-sm btn-danger custom-button" th:attr="data-name=${item},data-type=2" data-toggle="modal" data-target="#deleteModal">Delete</a>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--            editModal-->
+            <div th:fragment="edit_modal" class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="post" th:action="@{/admin/changeType}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel">Edit type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                    <div class="form-group">
+                                        <input type="hidden" name="post_id">
+                                        <input type="hidden" name="adminname" th:value="${session.sessionAdmin.getAdminname()}">
+                                        <input type="hidden" name="oldtype">
+                                        <input type="hidden" name="title">
+                                        <input type="hidden" name="author">
+                                        <input type="hidden" name="passed_article">
+                                        <label for="inputType1" class="col-form-label">supertype:</label>
+                                        <select id="inputType1" class="form-control" name="supertype">
+
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputType2" class="col-form-label">subtype:</label>
+                                        <select id="inputType2" class="form-control" name="subtype">
+
+                                        </select>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button  type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="save-edit" type="submit" class="btn btn-primary">Save edit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+<!--            deleteModal-->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <form method="post" th:action="@{/admin/deleteType}">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Delete type</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="supOrSubType">
+                                <input type="hidden" name="typeName">
+                                <p>Continue delete this type?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button  type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button id="delete-type" type="submit" class="btn btn-primary">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin/adminArticles.js}"></script>
+<script th:src="@{/js/utils/pagination.js}"></script>
+<!--<script>-->
+<!--    function showName(name) {-->
+<!--        const typeName = name.getAttribute("data-name");-->
+<!--        const typeID = name.getAttribute("data-id");-->
+<!--        $("#Current-type").text(typeName)-->
+<!--        $("[name='currentTypeName']").val(typeName)-->
+<!--        $("#editModal [name='supOrSubType']").val(typeID)-->
+<!--    }-->
+<!--    function deleteType(name) {-->
+<!--        const supOrSubType = name.getAttribute("data-type");-->
+<!--        const typeName = name.getAttribute("data-name");-->
+<!--        $("#deleteModal [name='supOrSubType']").val(supOrSubType)-->
+<!--        $("#deleteModal [name='typeName']").val(typeName)-->
+<!--    }-->
+<!--</script>-->
+</body>
+</html>

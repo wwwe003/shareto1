@@ -1,0 +1,38 @@
+#saveTip{
+    color: #ef6155;
+}
+#btn-setType {
+    border: 1px solid #00b5ad;
+    padding: .375rem .75rem;
+    font-size: 16px;
+    line-height: 1.5;
+    display: inline-block;
+    font-weight: 400;
+    color: #00b5ad;
+    background-color: #fff;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+#inputType1{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.form-check-label{
+    font-weight: bold;
+}
+#md-description .description{
+    resize: none;
+}
+.is-error{
+    background-color: #fee;
+    border: 1px solid #c00;
+    box-shadow: 0 0 0 1px #c00;
+}
+.errorMessage{
+    background-color: #fee;
+    border: 1px solid #c00;
+    box-shadow: 0 0 0 1px #c00;
+}
+.errorMessage span{
+    margin-left: 20px;
+}

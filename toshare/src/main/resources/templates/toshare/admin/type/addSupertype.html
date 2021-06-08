@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/dashboard.css}">
+    <title>type manage</title>
+</head>
+<body>
+<div th:replace="~{toshare/admin/dashboard::topbar}"></div>
+<div class="container">
+    <div class="row">
+        <div th:replace="~{toshare/admin/dashboard::sidebar}"></div>
+        <div class="col-6 offset-4 mt-5">
+            <div class="alert alert-warning alert-dismissible"  th:unless="${#strings.isEmpty(nullMsgSup)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>warning</strong>&nbsp;&nbsp;[[${nullMsgSup}]]
+            </div>
+            <div class="alert alert-danger alert-dismissible"  th:unless="${#strings.isEmpty(message_1)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong th:text="${message_1}"></strong>&nbsp;&nbsp;[[${message_tip}]]
+            </div>
+            <form id="typeForm" method="post" class="mb-4 mt-3" th:action="@{/admin/addSupertype}">
+                <div class="form-group mb-2 pr-3 w-75" style="display: inline-block">
+                    <input type="hidden" name="adminname" th:value="${session.sessionAdmin.getAdminname()}">
+                    <label for="inputSupertype" class="sr-only">new supertype</label>
+                    <input name="type_first_name" class="form-control" th:value="${sup?.getType_first_name()}" id="inputSupertype" placeholder="new supertype">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Add</button>
+            </form>
+            <p>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    show all existed supertype
+                </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body w-25 " style="display: inline-block;padding: 10px" th:each="supertype:${supertypes}">
+                    [[${supertype.getType_first_name()}]]&nbsp;&nbsp;
+                </div>
+            </div>
+</div>
+    </div>
+</div>
+</body>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin/type/addSupertype.js}"></script>
+</html>

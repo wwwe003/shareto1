@@ -1,0 +1,272 @@
+a, a:active, a:hover, a:link, a:link:hover, a:visited {
+    text-decoration: none;
+}
+.article-content .article-meta {
+    margin: 12px 0 20px;
+    font-size: 15px;
+    color: #777777;
+}
+.article-content div:nth-child(3){
+    display: block;
+}
+.media-info {
+    border-top: 2px solid #ed4040;
+    margin-bottom: 16px;
+    padding: 15px 20px 20px;
+    background: #f4f5f6;
+}
+.detail-article-container .media-info-wrapper {
+    float: right;
+    width: 250px;
+}
+.media-info .user-info .user-avatar {
+    float: left;
+    display: table-cell;
+    overflow: hidden;
+    margin-right: 12px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid #e8e8e8;
+    border-radius: 50%;
+    background: #ddd;
+    width: 70px;
+    height: 70px;
+}
+.media-info .user-info .user-name {
+    display: table-cell;
+    vertical-align: middle;
+    height: 70px;
+}
+.media-info .user-info .user-name .name {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: #222;
+}
+/*.bui-icon {*/
+/*    !*font-family: ttIcons!important;*!*/
+/*    font-size: 16px;*/
+/*    display: inline-block;*/
+/*    line-height: 1;*/
+/*    speak: none;*/
+/*    font-style: normal;*/
+/*    font-weight: 800;*/
+/*    font-variant: normal;*/
+/*    text-transform: none;*/
+/*    text-rendering: auto;*/
+/*    -webkit-font-smoothing: antialiased;*/
+/*    -moz-osx-font-smoothing: grayscale;*/
+/*}*/
+#action-follow:hover{
+    background: #00b5e5;
+    border-color: #00b5e5;
+}
+.content-action:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.content-action .action-list {
+    float: right;
+}
+.content-action .action-list div {
+    display: inline-block;
+    line-height: 18px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.content-action .action-item-like:hover {
+    color: #00c4ff;
+}
+.content-action .action-item-like{
+    padding-right: 10px;
+}
+.content-action .action-item-liked{
+    padding-right: 10px;
+    color: #00c4ff;
+}
+
+.content-action .action-item-favorite:hover {
+    color: #00c4ff;
+}
+.content-action .action-item-favorited{
+    color: #00c4ff;
+}
+.toolbar {
+    display: none;
+    position: fixed;
+    top: 300px;
+    margin-left: 92px;
+}
+.toolbar .tool-container {
+    width: 50px;
+    height: 50px;
+    padding-left: 0;
+    box-sizing: border-box;
+    border-radius: 2px;
+    box-shadow: 0 3px 9px #ddd;
+}
+.toolbar .tool-item {
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+}
+.toolbar .tool-item img {
+    margin: 8px auto;
+}
+
+/*comment*/
+.user-comment *{
+    box-sizing: content-box;
+}
+.user-comment .no-login {
+    position: relative;
+}
+.user-comment .no-login .baffle {
+    display: block;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    line-height: 96px;
+    font-size: 16px;
+    border-radius: 4px;
+    text-align: center;
+    color: #777;
+    background-color: #e5e9ef;
+    overflow: hidden;
+    z-index: 10;
+}
+.user-comment .no-login .baffle .btn-login-modal {
+    padding: 4px 9px;
+    margin: 0 3px;
+    color: #fff;
+    background-color: #00a1d6;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.user-comment .no-login .baffle .btn-login-modal:hover{
+    background-color: #00b5e5;
+}
+.user-comment .textarea-container{
+    margin-left: 65px;
+    margin-right: 85px;
+    position: relative;
+}
+.user-comment .textarea-container textarea{
+    font-size: 12px;
+    display: inline-block;
+    box-sizing: border-box;
+    background-color: #f4f5f7;
+    border: 1px solid #e5e9ef;
+    overflow: auto;
+    border-radius: 4px;
+    color: #555;
+    width: 100%;
+    /*height: 65px;*/
+    transition: 0s;
+    padding: 5px 10px;
+    line-height: normal;
+    outline: none;
+    resize: none;
+}
+.user-comment #comment-list .list-item .con{
+    border-top: 2px solid #e5e9ef;
+    padding-top: 1rem;
+    margin-left: 4rem;
+}
+.user-comment #comment-list .list-item .user{
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    line-height: 18px;
+    padding-bottom: 4px;
+    word-wrap: break-word;
+    position: relative;
+}
+.user-comment #comment-list .list-item .user .name{
+    color: #6d757a
+}
+.user-comment #comment-list .list-item .user .name:hover {
+    color: #00a1d6;
+}
+.user-comment #comment-list .list-item .text{
+    font-size: 16px;
+    overflow: hidden;
+    padding: 2px 0;
+}
+.user-comment #comment-list .list-item .info{
+    color: #99a2aa;
+    line-height: 26px;
+    font-size: 12px;
+}
+.user-comment #comment-list .list-item .info > span{
+    margin-right: 20px;
+}
+.user-comment #comment-list .list-item .info .btn-hover{
+    padding: 0 5px;
+    border-radius: 4px;
+    margin-right: 15px;
+    cursor: pointer;
+    display: inline-block;
+}
+.user-comment #comment-list .list-item .info .btn-hover:hover{
+     color: #00a1d6;
+     background: #e5e9ef;
+}
+.user-comment #comment-list .user .isAuthorComment{
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #0a001f;
+}
+
+/*comment-reply*/
+.user-comment #comment-list .list-item .reply-box .reply-item{
+    padding: 10px 0;
+}
+.user-comment #comment-list .list-item .reply-box .reply-item .reply-face {
+    display: inline-block;
+    position: relative;
+    margin-right: 6px;
+    vertical-align: top;
+}
+.user-comment #comment-list .list-item .reply-box .reply-item .reply-con {
+    display: inline-block;
+    width: calc(100% - 34px);
+}
+.user-comment #comment-list .list-item .reply-box .reply-item .reply-con .user{
+    display: inline-block;
+}
+.user-comment #comment-list .list-item .reply-box .reply-con .text-con{
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+    white-space: pre-wrap;
+}
+
+.user-comment #comment-list .list-item .reply-box .reply-item .info {
+    margin-left: 34px;
+}
+.user-comment #comment-list .list-item:last-child .con {
+    border-bottom: 1px solid #e5e9ef;
+}
+.is-error{
+    background-color: #fee;
+    border: 1px solid #c00;
+    box-shadow: 0 0 0 1px #c00;
+}
+.errorMessage{
+    background-color: #fee;
+    border: 1px solid #c00;
+    box-shadow: 0 0 0 1px #c00;
+}
+.errorMessage span{
+    margin-left: 20px;
+}

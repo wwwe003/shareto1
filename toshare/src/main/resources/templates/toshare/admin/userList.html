@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/userList.css}">
+    <title>User list</title>
+</head>
+<body>
+<div th:replace="~{toshare/admin/adminArticles::topbar}"></div>
+<div class="container mt-5">
+    <div class="row mt-5">
+        <table class="table table-hover table-bordered mt-5" id="showTable">
+            <thead>
+            <tr >
+                <th>#</th>
+                <th>username</th>
+                <th>userID</th>
+                <th>userNo</th>
+                <th>email</th>
+                <th>register time</th>
+                <th>more</th>
+            </tr>
+            </thead>
+            <tbody id="showUsers" th:attr="data-pageCode=${userList.getPageCode()},data-PageSize=${userList.getPageSize()},data-totalRecord=${userList.totalRecord}">
+            <tr th:each="user:${userList.getBeanList()}">
+                <td th:text="${userStat.index+1}+(${userList.getPageCode()-1}*2)"></td>
+                <td th:text="${user.getUsername()}"></td>
+                <td th:text="${user.getUid()}"></td>
+                <td th:text="${user.getUserno()}"></td>
+                <td th:text="${user.getEmail()}"></td>
+                <td th:text="${#dates.format(user.getRegistdate(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td>
+                    <a class="btn btn-sm btn-outline-success review-button" th:href="@{/admin/detail/{uno}(uno=${user.getUserno()})}">Detail</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="col-12">
+            <div id="pagination">
+                <nav aria-label="...">
+                    <ul class="pagination justify-content-center" id="pageUL">
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin/userList.js}"></script>
+<script th:src="@{/js/utils/pagination.js}"></script>
+<script th:src="@{/js/utils/search.js}"></script>
+</body>
+</html>

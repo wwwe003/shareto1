@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/dashboard.css}">
+    <title>type manage</title>
+</head>
+<body>
+<div th:replace="~{toshare/admin/dashboard::topbar}"></div>
+<div class="container">
+    <div class="row">
+        <div th:replace="~{toshare/admin/dashboard::sidebar}"></div>
+        <div class="col-6 offset-4 mt-5">
+            <div class="alert alert-warning alert-dismissible"  th:unless="${#strings.isEmpty(nullMsgSub0)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>warning</strong>&nbsp;&nbsp;[[${nullMsgSub0}]]
+            </div>
+            <div class="alert alert-warning alert-dismissible"  th:unless="${#strings.isEmpty(nullMsgSub)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>warning</strong>&nbsp;&nbsp;[[${nullMsgSub}]]
+            </div>
+            <div class="alert alert-danger alert-dismissible"  th:unless="${#strings.isEmpty(message_1)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong th:text="${message_1}"></strong>&nbsp;&nbsp;[[${message_tip}]]
+            </div>
+            <form id="typeForm" method="post" class="mb-4 mt-3" th:action="@{/admin/addSubtype}">
+                <div class="form-group mb-2 pr-3 w-75" style="display: inline-block">
+                    <input type="hidden" name="adminname" th:value="${session.sessionAdmin.getAdminname()}">
+                    <label for="inputType1">Supertype</label>
+                    <select id="inputType1" class="form-control" name="first_id">
+                        <option selected>select</option>
+                        <option th:each="type1:${supertypes}" th:text="${type1.getType_first_name()}"
+                                th:value="${type1.getType_first_id()}" th:selected="${type1.getType_first_id()==type1ID}"></option>
+                    </select>
+                </div>
+                <div class="form-group mb-2 pr-3 w-75" style="display: inline-block">
+                    <label for="inputSupertype" class="sr-only">new supertype</label>
+                    <input name="type_second_name" class="form-control" th:value="${sub?.getType_second_name()}" id="inputSupertype" placeholder="new subtype">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Add</button>
+                <p>
+                    <button id="showSubType" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        show all existed subtype
+                    </button>
+                </p>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body w-25 " style="display: inline-block;padding: 10px" th:each="subtype:${subtypes}">
+                        [[${subtype.getType_second_name()}]]&nbsp;&nbsp;
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin/type/addSubtype.js}"></script>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/login.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/managePost.css}">
+
+
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/user/managePost.js}"></script>
+    <script th:src="@{/js/utils/pagination.js}"></script>
+
+    <title>manage post</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav" th:fragment="topbar">
+    <a class=" mb-0 ml-5 logo" th:href="@{/main}">ToShare</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="container">
+        <div class="collapse navbar-collapse col-11 " id="navbarNav1">
+            <form class="form-inline col-9 offset-3" method="post" th:action="@{/search}">
+                <div class="input-group w-75 ml-2">
+                    <select id="inputState" name="limit" class="form-control input-group w-20">
+                        <option selected>content</option>
+                        <option>title</option>
+                        <option>author</option>
+                    </select>
+                    <input name="keyword" class="form-control mr-2 w-50" type="text"  placeholder="search article" aria-label="Text input with segmented dropdown button">
+                    <button class="btn btn-outline-success" type="submit">search</button>
+                </div>
+                <!--                    <input type="hidden" name="searchType" value="">-->
+                <!--                    <input type="hidden" name="op" value="search">-->
+            </form>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav2">
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img th:src="@{/images/person-circle.svg}" width="32" height="32" th:title="${session.sessionUser.getUsername()}"></i></a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item"  href="#" th:href="@{/user/{no}(no=${session.sessionUser?.getUserno()})}" target="_blank">My Page</a>
+                <a class="dropdown-item" th:href="@{/user/password}">Modify Password</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" th:href="@{/user/logout}">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<nav class="navbar bg-dark">
+    <div class="container">
+    <form class="form-inline row">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <a th:href="@{/{username}/myPost(username=${session.sessionUser?.getUsername()})}" id="btn-manage" type="button" class="btn btn-info active" >Posted Article</a>
+            <button id="btn-post" type="button" class="btn btn-info" th:value="${session.sessionUser.getUsername()}">Post</button>
+            <a th:href="@{/{username}/message(username=${session.sessionUser?.getUsername()})}" id="btn-message" type="button" class="btn btn-info" >Message <span th:unless="${newMessage} eq '0'">([[${newMessage}]])</span></a>
+        </div>
+        <div class="ml-3">
+            <button id="drafts" type="button" class="btn btn-info">Drafts</button>
+            <button id="trash" type="button" class="btn btn-info">Trash</button>
+            <button id="under_review" type="button" class="btn btn-info">Under review article</button>
+        </div>
+    </form>
+    </div>
+</nav>
+<div class="container post-type mt-5 bg-light">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <form class="border border-warning rounded mt-3 shadow-sm">
+                <div class="form-row">
+                    <div class="form-group col-3 m-2">
+                        <select id="inputType1" class="form-control">
+                            <option selected>Type1</option>
+                            <option th:each="type1:${typeFirsts}" th:text="${type1.getType_first_name()}" th:value="${type1.getType_first_name()}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group col-3 m-2">
+                        <select id="inputType2" class="form-control">
+                            <option selected>Type2</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-2 ml-4 mb-2 mt-2">
+                        <span id="btn-check">Check Post</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container mb-3 bg-light">
+    <div class="row justify-content-center">
+        <div class="col-8 mt-5">
+            <div id="totalPost"><p>total:&nbsp;</p><span th:text="${myPosts.totalRecord}"></span><p>&nbsp;article posted</p></div>
+            <table class="table table-hover table-bordered" id="showTable">
+                <thead>
+                <tr >
+                    <th>#</th>
+                    <th style="width: 230px">title</th>
+                    <th style="width: 190px">type</th>
+                    <th>update time</th>
+                    <th style="width: 150px">more</th>
+                </tr>
+                </thead>
+                <tbody id="showPost" th:value="${myPosts.getPageSize()}" th:name="${myPosts.totalRecord}">
+                <tr th:each="myPost:${myPosts.getBeanList()}" >
+                    <td th:text="${myPostStat.index+1}+(${myPosts.getPageCode()-1}*3)"></td>
+                    <td th:text="${myPost.getTitle()}"></td>
+                    <td th:text="${myPost.getType_first_name()}+'('+${myPost.getType_second_name()}+')'"></td>
+                    <td th:text="${myPost.getUpdate_time()==null}?${#dates.format(myPost.getCreate_time(), 'yyyy-MM-dd HH:mm:ss')}:${#dates.format(myPost.getUpdate_time(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td>
+                        <a th:href="@{/{username}/edit/{pid}(username=${session.sessionUser.getUsername()},pid=${myPost.getPost_id()},mode='scan')}" class="btn btn-sm btn-primary scan-button">scan</a>
+                        <button th:attr="data-username=${session.sessionUser.getUsername()},data-pid=${myPost.getPost_id()}" type="button" class="btn btn-sm btn-danger edit-button">Edit</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="pagination">
+                <nav aria-label="...">
+                    <ul class="pagination justify-content-center" id="pageUL">
+                    </ul>
+                </nav>
+            </div>
+            <div class="alert alert-info alert-dismissible"  th:unless="${#strings.isEmpty(message)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong th:text="${message}"></strong>  [[${message_tip}]]
+            </div>
+
+            <!-- Modal -->
+            <!-- editModal-->
+            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <strong>Posted article will be reedited, and save or post the article will be review again
+                                (received like and favorite will be reset also).</strong>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a id="continue" href="JavaScript:void(0)" class="btn btn-primary">Continue</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--deleteModal-->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">delete</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to delete this article(article will be put in <strong>trash</strong>)?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a id="continue-delete" href="JavaScript:void(0)" class="btn btn-danger">Continue</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--completedeleteModal-->
+            <div class="modal fade" id="complete-deleteModal" tabindex="-1" role="dialog" aria-labelledby="complete-deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="complete-deleteModalLabel">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure to completely delete this article(deleted article won't be back)?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a id="continue-complete-delete" href="JavaScript:void(0)" class="btn btn-danger">Continue</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,54 @@
+.card-body a{
+    text-decoration: none;
+    font-size: 18px;
+    color: #99a2aa;
+    cursor: pointer;
+    display: block;
+}
+.card-body a:hover{
+    color: #00a1d6;
+}
+.card-body .active{
+    color: #00a1d6;
+}
+a:link {
+    text-decoration: none;
+}
+a:visited {
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: none;
+}
+a:active {
+    text-decoration: none;
+}
+
+.post-header{
+    margin-top: 10px;
+    padding: 10px 0 10px;
+    border-bottom: 3px solid black;
+
+    font-size: 18px;
+    vertical-align: middle;
+}
+.post-header p{
+    margin-bottom: 0;
+}
+
+.postedArticles{
+    padding: 10px 0;
+    border-bottom: 2px solid rgba(168,168,168,0.51);/*#e8e8e8*/
+    width: 100%;
+    margin: 20px 0 20px;
+}
+
+.postedArticles ._title a{
+    color: #222;
+}
+.postedArticles ._title a:hover{
+    color: #406599;
+}
+.addCursor {
+    cursor: pointer;
+}

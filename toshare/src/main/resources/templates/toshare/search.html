@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/login.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/search.css}">
+    <title>ToShare</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="nav" th:fragment="topbar">
+    <a class=" mb-0 ml-5 logo" th:href="@{/main}">ToShare</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="container">
+        <div class="collapse navbar-collapse col-11 " id="navbarNav1">
+            <form class="form-inline col-9 offset-3" method="post" th:action="@{/search}">
+                <div class="input-group w-75 ml-2">
+                    <select id="inputState" name="limit" class="form-control input-group w-20">
+                        <option selected>content</option>
+                        <option>title</option>
+                        <option>author</option>
+                    </select>
+                    <input name="keyword" class="form-control mr-2 w-50" type="text"  placeholder="search article" aria-label="Text input with segmented dropdown button">
+                    <button class="btn btn-outline-success" type="submit">search</button>
+                </div>
+<!--                <input type="hidden" name="search_type" value="">-->
+<!--                <input type="hidden" name="op" value="search">-->
+            </form>
+        </div>
+        <div th:if="${session.sessionUser eq null}">
+            <a th:href="@{/user/login}" class="btn btn-primary">Log in</a>
+        </div>
+    </div>
+    <div th:unless="${session.sessionUser eq null}" class="collapse navbar-collapse justify-content-start mr-lg-5" id="navbarNav2">
+        <div class="dropdown" >
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><img th:src="@{/images/person-circle.svg}" width="32" height="32" th:title="${session.sessionUser.getUsername()}"></a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item"  href="#" th:href="@{/user/{no}(no=${session.sessionUser?.getUserno()})}" target="_blank">My Page</a>
+                <a class="dropdown-item" th:href="@{/user/password}">Modify Password</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" th:href="@{/user/logout}">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-10 mt-5">
+            <div id="page_info">
+                <input type="hidden" class="allPosts" th:attr="data-pageCode=${result?.pageCode},data-pageSize=${result?.pageSize},data-totalRecord=${result?.totalRecord}"/>
+                <input id="search_type" type="hidden"  th:attr="data-search=${search},data-keyword=${keyword}">
+                <span style="font-size: 25px">result by &quot[[${keyword}]]&quot :</span>
+                <span th:if="${#arrays.isEmpty(result?.getBeanList())}" id="noResult" style="font-size: 25px">no result.</span>
+            </div>
+        </div>
+        <div class="post col-10 mt-3 mb-3" id="search_result">
+            <div class="input-group" th:each="postResult:${result?.getBeanList()}">
+                <div class="article">
+                    <div class="title">
+                        <a href=# th:href="@{/{pid}(pid=${postResult.post_id})}"><h4 th:text="${postResult.title}"></h4></a>
+                        <p th:text="${postResult.description}"></p>
+                    </div>
+                    <div class="footer" >
+                        <a href="#" th:href="@{/user/{no}(no=${postResult.getUserno()})}" target="_blank" th:text="${postResult.author}"></a>
+                        <span th:text="${#dates.format(postResult.getUpdate_time(), 'yyyy-MM-dd HH:mm:ss')}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!--                pagination-->
+        <div id="pagination">
+            <nav aria-label="...">
+                <ul class="pagination" id="pageUL">
+
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{https://use.fontawesome.com/releases/v5.15.1/js/all.js}" data-auto-replace-svg="nest"></script>
+<script th:src="@{/js/search.js}"></script>
+</body>
+</html>

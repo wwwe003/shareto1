@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="robots" content="" />
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/login.css}">
+    <title>Admin Login</title>
+</head>
+<body class="adminLogin">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-4 mt-5">
+            <h2><strong>Toshare</strong> Dashboard</h2>
+                <form id="loginForm" class="shadow p-3 mb-auto bg-white rounded mb-4 mt-auto" th:action="@{/admin/login}" method="post">
+                    <div class="text-left" th:each="entry:${errmsgA}">
+                        <span class="errmsgA text-danger"  th:text="${entry.value}"></span>
+                    </div>
+                    <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+                    <div  class="form-group">
+                        <label for="adminname">adminname</label>
+                        <input type="text" class="form-control" name="adminname" id="adminname" th:value="${admin?.getAdminname()}" placeholder="">
+                    </div>
+                    <div class="form-group ">
+                        <label for="password">password</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-4" >Login</button>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+</body>
+</html>

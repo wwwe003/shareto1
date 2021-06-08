@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wjc.type.mapper.TypeMapper">
+
+    <select id="findType_first" resultType="Type_first">
+        select type_first_id, type_first_name from t_type_first order by type_first_id
+    </select>
+
+    <select id="findType_second" resultType="Type_second">
+        select type_second_id, type_second_name, t_first_id from t_type_second order by type_second_id
+    </select>
+
+    <select id="findType_secondBy1stName" parameterType="java.lang.Integer" resultType="Type_second">
+        select type_second_id, type_second_name, t_first_id from t_type_second where t_first_id=#{ID}
+    </select>
+
+    <!--    find type_first_id from t_type_first by type_first_name -->
+    <select id="find1stID" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select type_first_id from t_type_first where type_first_name=#{firstName}
+    </select>
+    <!--    find t_first_id from t_type_second -->
+    <select id="find2ndName" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select type_second_name from t_type_second where t_first_id=#{firstID}
+    </select>
+    <!--   find type_second_id by type_second_name-->
+    <select id="find2ndID" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select type_second_id from t_type_second where type_second_name=#{secondName}
+    </select>
+
+
+
+    <!--    获取该二级标题的一级标题的ID-->
+    <select id="firstID" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select t_first_id from t_type_second where type_second_name=#{name}
+    </select>
+
+    <select id="find2ndNamelist" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select type_second_name from t_type_second where t_first_id=#{ID}
+    </select>
+
+
+<!--    获取该二级标题的一级标题的Name-->
+    <select id="find1stTypeNameBy1stTypeID" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select type_first_name from t_type_first where type_first_id=#{ID}
+    </select>
+    <select id="find2ndNameBy1stID" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select type_second_name from t_type_second where type_second_id=#{type1Id}
+    </select>
+</mapper>

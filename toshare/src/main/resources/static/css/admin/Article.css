@@ -1,0 +1,53 @@
+.activeB{
+    border-bottom: 4px solid #20c997;
+}
+.nav-item.top{
+    margin-right: 1.5rem
+}
+.nav-item.top:hover{
+    border-bottom: 4px solid #20c997;
+}
+
+.toolbar {
+    display: none;
+    position: fixed;
+    top: 300px;
+    margin-left: 92px;
+}
+.toolbar .tool-container {
+    width: 50px;
+    height: 50px;
+    padding-left: 0;
+    box-sizing: border-box;
+    border-radius: 2px;
+    box-shadow: 0 3px 9px #ddd;
+}
+.toolbar .tool-item {
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+}
+.toolbar .tool-item img {
+    margin: 8px auto;
+}
+.toolbar li::marker{
+    content: "Top";
+}
+
+.is-error{
+    background-color: #fee;
+    border: 1px solid #c00;
+    box-shadow: 0 0 0 1px #c00;
+    border-radius: .25rem;
+}
+.errorMessage{
+    background-color: #fee;
+    border: 1px solid #c00;
+    box-shadow: 0 0 0 1px #c00;
+    border-radius: .25rem;
+}
+.errorMessage span{
+    margin-left: 20px;
+}

@@ -1,0 +1,201 @@
+.username{
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eee;
+}
+
+#followPageUser .user-subscribe-follow{
+    margin: 30px auto auto;
+}
+#followPageUser .user-subscribe-follow:hover, .user-info .fans-action .user-subscribe-follow:hover{
+    background: #00b5e5;
+    border-color: #00b5e5;
+}
+#followPageUser .user-subscribe-followed{
+    margin: 30px auto auto;
+}
+#followPageUser .user-subscribe-followed:hover, .user-info .fans-action .user-subscribe-followed:hover{
+    background: #00b5e5;
+    border-color: #00b5e5;
+}
+#followPageUser .postButton{
+    margin: 30px auto auto;
+    width: 130px;
+    height: 24px;
+}
+#followPageUser .postButton a{
+    display: inline-block;
+    border: 1px solid #2a90d7;
+    border-radius: 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 130px;
+    height: 24px;
+    font-size: 16px;
+    color: #fff;
+    background: #2a90d7;
+    text-align: center;
+    line-height: 16px;
+}
+#followPageUser .postButton a:hover{
+    background: #6610f2
+}
+.Tabs{
+    margin: 18px;
+}
+.Tabs-item{
+    display: inline;
+    padding-left: 105px;
+}
+
+.Tabs-item  span{
+    cursor: pointer;
+    margin-right: 50px;
+    color: #2a2a2a;
+    font-size: 22px;
+    padding: 5px 0 18px 0; /*上右下左*/
+}
+.Tabs-milestone{
+    display: inline;
+    padding-left: 10px;
+}
+
+.Tabs-item  .active{
+        border-bottom: 4px solid #00a8c6;
+}
+.Tabs-item  span:hover{
+    border-bottom: 4px solid #00a8c6;
+}
+.Tabs-milestone span{
+    padding: 10px;
+    font-size: 18px;
+    color: #99a2aa;
+    cursor: pointer;
+}
+
+.Tabs-milestone span:hover{
+    color: #00a1d6;
+}
+.Tabs-milestone .active{
+    color: #00a1d6;
+}
+
+.user-info {
+    padding: 20px 0 20px;
+    border-bottom: 1px solid #eee;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.user-info .user-avatar {
+    float: left;
+    display: table-cell;
+    overflow: hidden;
+    margin-right: 12px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 1px solid #e8e8e8;
+    border-radius: 50%;
+    background: #ddd;
+    width: 70px;
+    height: 70px;
+}
+.user-avatar img{
+    max-width: 70px;
+    max-height: 70px
+}
+.user-avatar-small{
+    display: inline-block;
+    width: 50px;
+    height: 40px;
+}
+.user-avatar-small img{
+    max-width: 40px;
+    max-height: 40px;
+}
+.post_footer .postDate{
+    display: inline-block;
+    width: 450px;
+    color: #777;
+}
+.post_footer .like{
+    display: inline-block;
+    font-size: 20px;
+    color: #222222;
+}
+.user-info .user-name {
+    display: table-cell;
+    vertical-align: middle;
+    height: 70px;
+    width: 420px;
+    }
+
+.user-info .user-name .name {
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+    color: #222;
+}
+.fans-action{
+    display: table-cell;
+    vertical-align: middle;
+}
+#pagination{
+    margin-top: 20px;
+}
+.addCursor {
+cursor: pointer;
+}
+
+#userList .favoritePost{
+    padding: 10px 0;
+    border-bottom: 2px solid rgba(168,168,168,0.51);/*#e8e8e8*/
+    width: 100%;
+    margin: 20px 0 20px;
+}
+
+#userList .favoritePost .post_title a{
+    color: #222;
+}
+#userList .favoritePost .post_title a:hover{
+    color: #406599;
+
+}
+#userList .favoritePost .post_footer a{
+    display:inline-block;
+    color: #777;
+    width: 100px;
+    height: 20px;
+}
+#userList .favoritePost .post_footer a:hover{
+    color: #406599;
+}
+.follow-header.follow-header-info{
+    padding: 10px 0 10px;
+    border-bottom: 2px solid #e5e9ef;
+
+}
+.follow-header-info .title{
+    display: inline-block;
+    font-size: 18px;
+    vertical-align: middle;
+    width: 600px;
+}
+.follow-header.order{
+    display: inline-block;
+    vertical-align: middle;
+}
+.follow-header.order p{
+    margin-right: 15px;
+    float: left;
+    cursor: pointer;
+}
+.follow-header.order p.active{
+    color: #00a1d6;
+    border-bottom: #00a1d6 solid 2px;
+}
+.follow-header.order p:hover{
+    color: #00a1d6;
+    border-bottom: #00a1d6 solid 2px;
+}

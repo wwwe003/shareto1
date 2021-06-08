@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/login.css}">
+
+
+    <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/user/login.js}"></script>
+    <title>Login</title>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class=" mb-0 ml-5 logo" th:href="@{/login}" >ToShare</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item ">
+                <a class="nav-link btn btn-outline-primary text-primary" th:href="@{/user/registration}" >Sign up</a>
+            </li>
+            <li class="nav-item " >
+                <a class="nav-link " th:href="@{/user/login}" >Login</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+    <div class="container mt-5">
+        <div class="row justify-content-between">
+            <div class="col-12 col-md-6">
+                <div class="card border-0" style="width: auto">
+                    <img th:src="@{/images/bg.png}" class="card-img-top" alt="ToShare">
+                    <div class="card-body">
+                        <p class="card-text h1">Share the Knowledge on the way of Coding.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3 ">
+                <form id="loginForm" class="shadow p-3 mb-auto bg-white rounded mb-4 mt-auto" th:action="@{/user/login}" method="post" >
+                    <div class="text-left" th:each="entry:${errmsg}">
+                        <span class="errmsg text-danger"  th:text="${entry.value}"></span>
+                    </div>
+                    <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+                    <div  class="form-group">
+                        <label for="username">username</label>
+                        <input type="text" class="form-control" name="username" id="username" th:value="${user?.username}" placeholder="">
+                        <label class="errorClass text-danger" id="usernameError"></label>
+                    </div>
+                    <div class="form-group ">
+                        <label for="password">password</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="">
+                        <label class="errorClass text-danger" id="passwordError"></label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-4" >Login</button>
+                    <div class="text-center mt-2 mb-auto">
+                        <a th:href="@{#}">Forget password?</a>
+                    </div>
+                </form>
+                <div class="text-center mt-4">
+                    Don't have an account?
+                    <a th:href="@{/user/registration}">Sign up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-light py-2 fixed-bottom">
+        <div>
+            <p class="text-center text-dark mb-auto h4">ToShare</p>
+        </div>
+    </footer>
+</body>
+</html>

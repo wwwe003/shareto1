@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wjc.admin.mapper.AdminMapper">
+    <select id="findByAdminnameAndPassword" resultType="Admin">
+        select * from t_admin where adminname=#{adminname} and password=#{password}
+    </select>
+    <select id="findByAdminName" parameterType="java.lang.String" resultType="Admin">
+        select * from t_admin where adminname=#{adminname}
+    </select>
+    <insert id="addSupertype" parameterType="Type_first">
+        <selectKey  keyProperty="type_first_id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into t_type_first values (#{type_first_id},#{type_first_name})
+    </insert>
+    <insert id="addSubtype" parameterType="Type_second">
+        <selectKey  keyProperty="type_second_id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into t_type_second values (#{type_second_id},#{type_second_name},#{t_first_id})
+    </insert>
+
+    <update id="editSupertype">
+        update t_type_first set type_first_name=#{typeName} where type_first_name=#{currentTypeName}
+    </update>
+    <update id="editSubtype">
+        update t_type_second set type_second_name=#{typeName} where type_second_name=#{currentTypeName}
+    </update>
+
+    <select id="findSubtypeCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from t_type_second where t_first_id=#{typeID}
+    </select>
+
+    <select id="deleteSubtypeConfirm" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from t_posts where type_second_id=#{typeID} and (state=2 or state=1)
+    </select>
+    <select id="checkDraftOrTrash" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from t_posts where type_second_id=#{typeID} and state=0
+    </select>
+    <update id="changeDeletedSubtype" parameterType="java.lang.Integer">
+        update t_posts set type_second_id=null where type_second_id=#{typeID}
+    </update>
+    <delete id="deleteSupertype">
+        delete from t_type_first where type_first_name=#{typeName}
+    </delete>
+    <delete id="deleteSubtype">
+        delete from t_type_second where type_second_name=#{typeName}
+    </delete>
+
+    <select id="findCurrent2ndPosts" resultType="Post">
+        select * from t_posts p,t_type_first tf,t_type_second ts where tf.type_first_id=p.type and ts.type_second_id=p.type_second_id and p.type_second_id=#{id2} and state=2 order by p.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+    <update id="changeType">
+        update t_posts set type=#{supertypeID}, type_second_id=#{subtypeID} where post_id=#{pid} and id>=0
+    </update>
+
+
+    <!--    review manage-->
+    <select id="findTotalUnderReviewPostsRecords" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from t_posts where state=#{state}
+    </select>
+    <select id="showUnderReviewPosts" parameterType="java.lang.Integer" resultType="Post">
+        select * from t_posts p,t_type_first f,t_type_second s where p.state=#{state} and f.type_first_id=p.type and
+        s.type_second_id=p.type_second_id order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+
+    <select id="findTotalRecordsBySubtype" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from t_posts where state=#{state} and type_second_id=#{subtypeID}
+    </select>
+    <select id="showReviewResultBySubtype" parameterType="java.lang.Integer" resultType="Post">
+        select * from t_posts p,t_type_first f,t_type_second s where p.state=#{state} and p.type_second_id=#{subtypeID} and f.type_first_id=p.type and
+            s.type_second_id=p.type_second_id order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <update id="review">
+        update t_posts set state=#{state}, draft=#{draft} where post_id=#{pid} and id>=0
+    </update>
+    <select id="findSupertypeAndCount" resultType="java.util.HashMap">
+        select count(*), p.type, f.type_first_name from t_posts p, t_type_first f where p.state=1 and p.type=f.type_first_id group by p.type,f.type_first_id order by p.type
+    </select>
+    <select id="findSubtypeAndCount" resultType="java.util.HashMap">
+        select count(*), p.type_second_id, s.type_second_name,s.t_first_id from t_posts p, t_type_second s where p.state=1 and p.type_second_id=s.type_second_id group by p.type_second_id,s.type_second_id order by p.type_second_id
+    </select>
+
+    <select id="articleByPostID" parameterType="java.lang.String" resultType="Post">
+        select * from t_posts p,t_type_second s, t_type_first f where p.post_id=#{pid} and f.type_first_id=p.type and s.type_second_id=p.type_second_id
+    </select>
+
+
+    <update id="changeState">
+        update t_posts set state=#{state} where post_id=#{pid}
+    </update>
+    <update id="changeStateToDraft">
+        update t_posts set state=#{state},draft=#{draft} where post_id=#{pid}
+    </update>
+    <insert id="saveReason">
+        insert into t_review_message values (#{post_id},#{title},#{author},#{adminname},#{newtype},#{oldtype},#{reason}, #{update_time},#{pass},#{delete},#{change_type},#{nopass},#{state})
+    </insert>
+    <insert id="saveReviewDelete">
+        insert into t_review_message set post_id=#{post_id}, title=#{title}, reason=#{reason}, author=#{author}, update_time=#{update_time},adminname=#{adminname}, `delete`=1, nopass=0, pass=0, change_type=0
+    </insert>
+    <insert id="saveReviewNopass">
+        insert into t_review_message set post_id=#{post_id}, title=#{title}, reason=#{reason}, author=#{author}, update_time=#{update_time},adminname=#{adminname}, nopass=1, pass=0, `delete`=0, change_type=0
+    </insert>
+    <insert id="saveReviewPass">
+        insert into t_review_message set post_id=#{post_id}, title=#{title}, author=#{author}, update_time=#{update_time}, adminname=#{adminname},pass=1, `delete`=0, nopass=0, change_type=0
+    </insert>
+
+
+    <select id="supertypeAndPostCount" resultMap="superCountResultMap">
+        select f.type_first_name, f.type_first_id, ifnull(p.count,0) count
+            from t_type_first f
+            left join(
+                select count(*) count, p.type, f.type_first_name
+                from t_posts p, t_type_first f
+                where p.state=2 and p.type=f.type_first_id
+                group by p.type,f.type_first_id order by p.type) as p
+            on f.type_first_id=p.type
+    </select>
+    <resultMap id="superCountResultMap" type="com.wjc.type.pojo.Type_first">
+        <result column="type_first_name" property="type_first_name" javaType="java.lang.String"/>
+        <result column="type_first_id" property="type_first_id" javaType="java.lang.Integer"/>
+        <result column="count" property="count" javaType="java.lang.Integer"/>
+    </resultMap>
+
+    <select id="subtypeAndPostCount" resultMap="subCountResultMap">
+        select s.type_second_name, s.type_second_id,s.t_first_id, ifnull(p.count,0) count
+            from t_type_second s
+            left join(
+                select count(*) count, p.type_second_id, s.type_second_name
+                from t_posts p, t_type_second s
+                where p.state=2 and p.type_second_id=s.type_second_id
+                group by p.type_second_id,s.type_second_id order by p.type_second_id) as p
+            on s.type_second_id=p.type_second_id
+    </select>
+    <resultMap id="subCountResultMap" type="com.wjc.type.pojo.Type_second">
+        <result column="type_second_name" property="type_second_name" javaType="java.lang.String"/>
+        <result column="type_second_id" property="type_second_id" javaType="java.lang.Integer"/>
+        <result column="t_first_id" property="t_first_id" javaType="java.lang.Integer"/>
+        <result column="count" property="count" javaType="java.lang.Integer"/>
+    </resultMap>
+
+    <insert id="saveReviewMessage" parameterType="Review_message">
+        insert into t_review_message values (#{post_id},#{title},#{author},#{adminname},#{newtype},#{oldtype},#{reason},#{update_time},#{pass},#{delete},#{change_type},#{nopass},#{state})
+    </insert>
+
+    <delete id="deleteArticle" parameterType="java.lang.String">
+        delete from t_posts where post_id=#{pid}
+    </delete>
+
+
+<!--    admin history-->
+    <select id="historyCount" resultType="java.lang.Integer">
+       select count(*) from t_review_message
+    </select>
+    <select id="findArticleHistory" resultType="Review_message">
+        select * from t_review_message order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <select id="historyUnreadCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_review_message where state=0 and author=#{author}
+    </select>
+
+<!--    user list-->
+    <select id="getUserListCount" resultType="java.lang.Integer">
+        select count(*) from t_user
+    </select>
+    <select id="getUserList" resultType="User">
+        select * from t_user order by registdate DESC limit #{pageCode},#{pageSize}
+    </select>
+    <select id="getUserDetail" parameterType="java.lang.String" resultType="UserDetail">
+        select * ,ifnull(p1.postedCount,0) postedCount,ifnull(p2.underReviewCount,0) underReviewCount
+        from(select userno, count(*) postedCount from t_posts where state=2 and userno=#{userno}) as p1
+            left join(
+            select count(*) underReviewCount,userno
+            from t_posts
+            where state=1 and userno=#{userno}) as p2
+            using(userno)
+            right join(
+            select * from t_user
+            where userno=#{userno}) as u
+            using(userno)
+    </select>
+    <select id="findTotallikes" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select likes from t_posts where userno=#{uno} and state=2
+    </select>
+    <select id="getFavoriteCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_favorite f,t_user u where u.userno=#{uno} and f.favorite_uid=u.uid
+    </select>
+    <select id="getReviewArticlesCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_posts where userno=#{uno} and state=1
+    </select>
+    <select id="getReviewArticles" resultType="Post">
+        select * from t_posts where userno=#{uno} and state=1 order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+    <select id="getFavoriteArticles" resultType="Post">
+        select * from(select f.favorite_postid from t_favorite f,t_user u where u.userno=#{uno} and f.favorite_uid=u.uid)as u left join t_posts p on p.post_id=u.favorite_postid order by p.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+<!--    <select id="getFavoriteArticles" resultType="Post">-->
+<!--        select * from t_favorite f,t_user u,t_posts p where u.userno=#{uno} and f.favorite_uid=u.uid and p.post_id=f.favorite_postid order by p.update_time DESC limit #{pageCode},#{pageSize}-->
+<!--    </select>-->
+
+<!--    type history-->
+    <insert id="addSupertypeHistory">
+        insert into t_history_type set change_time=#{change_time}, adminname=#{adminname}, `add`=1,`delete`=0,`change`=0,newtype=#{type_first_name}
+    </insert>
+    <insert id="addSubtypeHistory">
+        insert into t_history_type set change_time=#{change_time}, adminname=#{adminname}, `add`=1,`delete`=0,`change`=0,newtype=#{type_second_name},oldtype=#{superTypeName}
+    </insert>
+    <insert id="editTypeHistory">
+        insert into t_history_type set change_time=#{change_time}, adminname=#{adminname},`add`=0,`delete`=0,`change`=1,newtype=#{newtype},oldtype=#{oldtype}
+    </insert>
+    <insert id="deleteTypeHistory">
+        insert into t_history_type set change_time=#{change_time}, adminname=#{adminname},`add`=0,`delete`=1,`change`=0,oldtype=#{oldtype}
+    </insert>
+
+    <select id="findTypeHistory" resultType="TypeHistory">
+        select * from t_history_type order by change_time DESC limit #{pageCode},#{pageSize}
+    </select>
+    <select id="historyTypeCount" resultType="java.lang.Integer">
+        select count(*) from t_history_type
+    </select>
+</mapper>

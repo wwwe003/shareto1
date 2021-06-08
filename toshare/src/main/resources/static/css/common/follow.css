@@ -1,0 +1,54 @@
+.user-subscribe-follow {
+    position: relative;
+    border: 1px solid #2a90d7;
+    border-radius: 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 120px;
+    height: 24px;
+    font-size: 16px;
+    color: #fff;
+    background: #2a90d7;
+    text-align: center;
+    cursor: pointer;
+}
+.user-subscribe-followed{
+    position: relative;
+    border: 1px solid #e7e7e7;
+    border-radius: 3px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 120px;
+    height: 24px;
+    font-size: 16px;
+    color: #999;
+    background: #e7e7e7;
+    text-align: center;
+    cursor: pointer;
+}
+ .followed{
+    /*margin-top: 1px;*/
+    display: none;
+    box-sizing: border-box;
+    position: absolute;
+    border-radius: 4px;
+    border: 1px solid #e5e9ef;
+    min-width: 98px;
+    width: 98px;
+    padding: 6px 0 0;
+    left: 16px;
+    color: black;
+    background-color: #fff;
+    box-shadow: 0 5px 5px rgba(18,18,18,.1);
+}
+ .followed .follow_dropdown{
+    padding: 0;
+    margin-bottom: 10px;
+    vertical-align: middle;
+}
+ .followed .follow_dropdown li:hover{
+    background: #00c4ff;
+    cursor: pointer;
+}

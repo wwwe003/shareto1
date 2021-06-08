@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wjc.post.mapper.PostMapper">
+
+<!--    查出所有文章的个数-->
+    <select id="findAllRecords" resultType="java.lang.Integer">
+        select count(*) from t_posts where state=2
+    </select>
+    <!--    查出一级标题的文章的个数-->
+    <select id="findTotalType_1Records" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from t_posts where type=#{firstID} and state=2
+    </select>
+    <!--    查出二级标题的文章的个数-->
+    <select id="findTotalType_2Records" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select count(*) from t_posts where type_second_id=#{secondID} and state=2
+    </select>
+
+<!--    分页显示所有文章-->
+    <select id="findAllPost" resultType="Post">
+<!--        <bind name="key_offset" value="(pageCode-1)*pageSize"/>-->
+        select * from t_posts where state=2 order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+<!--    按二级标题分页显示文章-->
+    <select id="findCurrent2ndPosts" resultType="Post">
+<!--        <bind name="key_offset" value="(pageCode-1)*pageSize"/>-->
+        select * from t_posts where type_second_id=#{type} and state=2 order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <!--    按一级标题分页显示文章-->
+    <select id="findCurrent1stPosts" resultType="Post">
+        <!--        <bind name="key_offset" value="(pageCode-1)*pageSize"/>-->
+        select * from t_posts where type=#{type} and state=2 order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <select id="findPostByID" parameterType="java.lang.String" resultType="Post">
+        select * from t_posts where post_id=#{pid}
+    </select>
+
+    <select id="updateLikeNum" >
+        update t_posts set likes=#{likes} where post_id=#{post_id}
+    </select>
+
+    <select id="updateFavoriteNum">
+        update t_posts set favorites=#{favorites} where post_id=#{post_id}
+    </select>
+
+    <select id="findLikeNumByPid" resultType="java.lang.Integer">
+        select likes from t_posts where post_id=#{pid}
+    </select>
+    <select id="findFavoriteNumByPid" resultType="java.lang.Integer">
+        select favorites from t_posts where post_id=#{pid}
+    </select>
+
+    <select id="findTotallikesRecords" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_posts p ,t_user u where p.author=u.username and u.userno=#{userno} and p.state=2
+    </select>
+    <select id="findTotallikes" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select likes from t_posts where author=#{username} and state=2
+    </select>
+    <select id="findTotallikesPost" resultType="Post">
+        select * from t_posts p,t_user u where p.author=u.username and u.userno=#{userno} and p.state=2 order by likes DESC limit #{pageCode},#{pageSize}
+    </select>
+    <select id="findTotallikesPostLow" resultType="Post">
+        select * from t_posts p,t_user u where p.author=u.username and u.userno=#{userno} and p.state=2 order by likes limit #{pageCode},#{pageSize}
+    </select>
+
+    <select id="findTotalDynamicRecords" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_follow f,t_user u,t_posts p where f.follow_uid=u.uid and u.userno=p.userno and f.follower_uid=#{uid}
+    </select>
+
+    <select id="findDynamicPost" resultType="Post">
+        select *
+        from (select u.userno
+                from t_follow f right join t_user u
+                on f.follow_uid=u.uid
+                where f.follower_uid=#{uid}) as u
+            left join t_posts
+            on u.userno=t_posts.userno
+            order by t_posts.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <select id="findTotalRecords" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_favorite where favorite_uid=#{uid}
+    </select>
+    <select id="findFavoritePost" resultType="Post">
+        select * from t_favorite f, t_posts p where f.favorite_postid=p.post_id and favorite_uid=#{uid} order by f.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <select id="findTotalTimeLineRecords" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_posts p ,t_user u where p.author=u.username and u.userno=#{userno} and p.state=2
+    </select>
+    <select id="findTimeLinePost" resultType="Post">
+        select * from t_posts p ,t_user u where p.author=u.username and u.userno=#{userno} and p.state=2 order by p.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <select id="ManagePostShow" resultType="Post">
+        select * from t_posts p ,t_user u,t_type_first tf,t_type_second ts where p.author=u.username and tf.type_first_id=p.type and ts.type_second_id=p.type_second_id and u.userno=#{userno}  and p.state=#{state} order by p.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+    <select id="findTotalDeletedRecords" resultType="java.lang.Integer">
+        select count(*) from t_posts p where p.userno=#{userno} and p.state=#{state} and p.deleted=#{deleted} and p.draft=#{draft}
+    </select>
+<!--    <select id="findDeletedArticles" resultType="Post">-->
+<!--        select * from t_posts p ,t_user u,t_type_first tf,t_type_second ts where p.author=u.username and tf.type_first_id=p.type and ts.type_second_id=p.type_second_id and u.userno=#{userno}  and p.state=#{state} and p.deleted=#{deleted} and p.draft=#{draft} order by p.update_time DESC limit #{pageCode},#{pageSize}-->
+<!--    </select>-->
+    <select id="findDeletedArticles" resultType="Post">
+        select * from (select * from t_posts p where p.userno=#{userno} and p.state=#{state} and p.deleted=#{deleted} and p.draft=#{draft})as p left join t_type_first tf on tf.type_first_id=p.type left join t_type_second ts on ts.type_second_id=p.type_second_id order by p.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+    <select id="findTotalDraftRecords" resultType="java.lang.Integer">
+        select count(*) from t_posts p ,t_user u where p.author=u.username and u.userno=#{userno} and p.state=#{state} and p.draft=#{draft} and p.deleted=#{deleted}
+    </select>
+<!--    <select id="findDraftArticles" resultType="Post">-->
+<!--        select * from t_posts p ,t_type_first tf,t_type_second ts where tf.type_first_id=p.type and ts.type_second_id=p.type_second_id and userno=#{userno}  and p.state=#{state} and p.draft=#{draft} and p.deleted=#{deleted} order by p.update_time DESC limit #{pageCode},#{pageSize}-->
+<!--    </select>-->
+    <select id="findDraftArticles" resultType="Post">
+        select * from (select * from t_posts p where p.userno=#{userno} and p.state=#{state} and p.deleted=#{deleted} and p.draft=#{draft})as p left join t_type_first tf on tf.type_first_id=p.type left join t_type_second ts on ts.type_second_id=p.type_second_id order by p.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+    <select id="findTotalUnderReviewRecords" resultType="java.lang.Integer">
+        select count(*) from t_posts p ,t_user u where p.author=u.username and u.userno=#{userno} and p.state=#{state} and p.draft=#{draft} and p.deleted=#{deleted}
+    </select>
+    <select id="findUnderReviewArticles" resultType="Post">
+        select * from t_posts p ,t_user u,t_type_first tf,t_type_second ts where p.author=u.username and tf.type_first_id=p.type and ts.type_second_id=p.type_second_id and u.userno=#{userno}  and p.state=#{state} and p.draft=#{draft} and p.deleted=#{deleted} order by p.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+    <update id="changeState">
+        update t_posts set state=0, deleted=0, draft=1, update_time=#{time} where post_id=#{pid} and id>=0
+    </update>
+
+
+    <select id="findTotalRecordsByType" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_posts p ,t_type_second s where p.type_second_id=s.type_second_id and p.userno=#{userno} and s.type_second_name=#{typeName2}
+    </select>
+    <select id="findPostByType" resultType="Post">
+        select * from t_posts p, t_type_second s, t_type_first f where p.type_second_id=s.type_second_id and p.type=f.type_first_id and s.type_second_name=#{typeName2} and f.type_first_name=#{typeName1} and p.userno=#{userno} and p.state=2 order by p.update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+
+    <insert id="savePost" parameterType="Post" useGeneratedKeys="true" keyProperty="id">
+        <selectKey  keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into t_posts values (#{id},#{create_time},#{update_time},#{state},#{draft},#{deleted},#{author},#{description},#{html},#{markdown},#{title},#{type},#{type_second_id},#{post_id},#{userno},#{favorites},#{likes},#{allow_chat},#{allow_top},#{original},#{keywords})
+    </insert>
+    <update id="saveDraft" parameterType="Post">
+        update t_posts set update_time=#{update_time}, state=#{state},draft=#{draft},deleted=#{deleted},description=#{description},html=#{html},markdown=#{markdown},title=#{title},type=#{type},type_second_id=#{type_second_id} where post_id=#{post_id}
+    </update>
+<!--    <select id="findPostByPid" parameterType="java.lang.String" resultType="java.lang.Integer">-->
+<!--        select count(*) from t_posts where post_id=#{pid}-->
+<!--    </select>-->
+    <update id="changeDraft" parameterType="java.lang.String">
+        update t_posts set deleted=0,draft=1,state=0 where post_id=#{pid}
+    </update>
+    <update id="changeDeleted">
+        update t_posts set deleted=1,draft=0,state=0,update_time=#{time} where post_id=#{pid}
+    </update>
+
+    <delete id="completeDelete" parameterType="java.lang.String">
+        delete from t_posts where post_id=#{pid}
+    </delete>
+
+<!--    comment-->
+    <insert id="saveComment" parameterType="Comment">
+        <selectKey  keyProperty="cid" order="AFTER" resultType="java.lang.Integer">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into t_comment values (#{cid},#{username},#{content},#{userno},#{create_time},#{post_id},#{parent_id},#{author_comment},#{pname},#{pno})
+    </insert>
+    <select id="findComByPID" parameterType="java.lang.String" resultType="Comment">
+        select * from t_comment where post_id=#{postID} order by create_time DESC
+    </select>
+    <select id="commentCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_comment where post_id=#{postID}
+    </select>
+
+    <resultMap id="commentMap" type="Comment">
+        <id column="cid" property="cid"></id>
+        <result column="username" property="username"></result>
+        <result column="parent_id" property="parent_id"></result>
+        <collection property="replyComments" ofType="Comment" select="findComByPIDtest" column="cid"></collection>
+    </resultMap>
+    <select id="findComByPIDtest" resultMap="commentMap">
+        select * from t_comment where parent_id=#{cid}
+    </select>
+<!--    search-->
+    <select id="findTotalRecordsByAuthor" resultType="java.lang.Integer">
+        select count(*) from t_posts where author like concat('%',#{keyword},'%') and state=2
+    </select>
+    <select id="findTotalRecordsByTitle" resultType="java.lang.Integer">
+        select count(*) from t_posts where title like concat('%',#{keyword},'%') and state=2
+    </select>
+    <select id="findTotalRecordsByContent" resultType="java.lang.Integer">
+        select count(*) from t_posts where html like concat('%',#{keyword},'%') and state=2
+    </select>
+    <select id="searchByAuthor" resultType="Post">
+        select * from t_posts p, t_type_first f, t_type_second s  where author like concat('%',#{keyword},'%') and f.type_first_id=p.type and s.type_second_id=p.type_second_id and p.state=2 limit #{pageCode},#{pageSize}
+    </select>
+    <select id="searchByTitle" resultType="Post">
+        select * from t_posts p, t_type_first f, t_type_second s where title like concat('%',#{keyword},'%') and f.type_first_id=p.type and s.type_second_id=p.type_second_id and p.state=2 limit #{pageCode},#{pageSize}
+    </select>
+    <select id="searchByContent" resultType="Post">
+        select * from t_posts p, t_type_first f, t_type_second s where html like concat('%',#{keyword},'%') and f.type_first_id=p.type and s.type_second_id=p.type_second_id and p.state=2 limit #{pageCode},#{pageSize}
+    </select>
+
+<!--    message by user-->
+    <select id="historyCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from t_review_message where author=#{username}
+    </select>
+    <select id="findArticleHistory" resultType="Review_message">
+        select * from t_review_message where author=#{username} order by update_time DESC limit #{pageCode},#{pageSize}
+    </select>
+    <update id="unreadToRead" parameterType="java.lang.String">
+        update t_review_message set state=1 where author=#{username}
+    </update>
+</mapper>

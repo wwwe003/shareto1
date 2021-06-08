@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.min.css}">
+<!--    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/adminReview.css}">-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin/adminArticles.css}">
+    <title>Review manage</title>
+</head>
+<body>
+<div th:replace="~{toshare/admin/adminArticles::topbar}"></div>
+<div class="container">
+    <div class="row">
+        <nav th:fragment="sidebar" id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar mb-lg-5">
+            <div class="sidebar-sticky pt-3 mb-5">
+                <ul class="nav flex-column mb-5" style="font-size:1.25rem">
+                    <li class="nav-item">
+                        <a th:href="@{/admin/review}" id="all" class="nav-link supertype">All
+                            <span class="ml-1">([[${underReviewPostList.totalRecord}]])</span>
+                        </a>
+                    </li>
+<!--                    <li class="nav-item all_type">-->
+<!--                        <img th:src="@{/images/caret-down-fill.svg}" class="caret" alt="">-->
+<!--                        <a href="" onclick="return false;" id="type" class="nav-link supertype">type</a>-->
+<!--                    </li>-->
+                    <li class="nav-item parent" th:if="${needReview!=null}" th:each="supertype,stat:${needReview}">
+                        <img th:src="@{/images/caret-down-fill.svg}" class="caret" alt="">
+                        <a class="nav-link supertype" href="" onclick="return false;">
+                            [[${stat.current.key.getType_first_name()}]]<span class="ml-1">([[${stat.current.key.getCount()}]])</span>
+                        </a>
+                        <dl>
+                            <dd class="nav-item children" th:each="item:${stat.current.value}">
+                                <a th:attr="data-subtypeID=${item.getType_second_id()}" class="nav-link" href="" onclick="return false;">
+                                    [[${item.getType_second_name()}]]<span class="ml-1">([[${item.getCount()}]])</span>
+                                </a>
+                            </dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="main" class="col-11 offset-2 mt-5">
+
+<!--            <div class="alert alert-danger alert-dismissible"  th:unless="${#strings.isEmpty(nullNameMsg)}">-->
+<!--                <button type="button" class="close" data-dismiss="alert">&times;</button>-->
+<!--                <strong>warning</strong>&nbsp;&nbsp;[[${nullNameMsg}]]-->
+<!--            </div>-->
+            <div class="alert alert-success alert-dismissible"  th:unless="${#strings.isEmpty(success)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong th:text="${success}"></strong>&nbsp;&nbsp;[[${result_0}]]
+            </div>
+            <div class="alert alert-danger alert-dismissible"  th:unless="${#strings.isEmpty(failed)}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong th:text="${failed}"></strong>&nbsp;&nbsp;[[${result_1}]]
+            </div>
+            <div class="mb-3">
+                <h4>Under review articles</h4>
+            </div>
+
+            <table class="table table-hover table-bordered" id="showTable">
+                <thead>
+                <tr >
+                    <th>#</th>
+                    <th>title</th>
+                    <th>author</th>
+                    <th>type</th>
+                    <th>update time</th>
+                    <th>state</th>
+                    <th>more</th>
+                </tr>
+                </thead>
+                <tbody id="showPost" th:attr="data-PageSize=${underReviewPostList.getPageSize()},data-totalRecord=${underReviewPostList.totalRecord}">
+                <tr th:each="myPost:${underReviewPostList.getBeanList()}">
+                    <td th:text="${myPostStat.index+1}+(${underReviewPostList.getPageCode()-1}*2)"></td>
+                    <td class="td_title" th:attr="data-pid=${myPost.getPost_id()}" th:text="${myPost.getTitle()}"></td>
+                    <td th:text="${myPost.getAuthor()}"></td>
+                    <td class="typeID" th:attr="data-supertypeID=${myPost.getType()},data-subtypeID=${myPost.getType_second_id()}"
+                        th:text="${myPost.getType_first_name()}+'('+${myPost.getType_second_name()}+')'"></td>
+                    <td th:text="${myPost.getUpdate_time()==null}?${#dates.format(myPost.getCreate_time(), 'yyyy-MM-dd HH:mm:ss')}:${#dates.format(myPost.getUpdate_time(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td class="text-info">under review</td>
+                    <td>
+<!--                        <a class="btn btn-sm btn-primary change-button">Change type</a>-->
+                        <a class="btn btn-sm btn-warning review-button" th:href="@{/admin/review/{pid}(pid=${myPost.getPost_id()})}">Review</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div id="pagination">
+                <nav aria-label="...">
+                    <ul class="pagination justify-content-center" id="pageUL">
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/2.5.2/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.5.2/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/admin/adminReview.js}"></script>
+<script th:src="@{/js/utils/pagination.js}"></script>
+<script th:src="@{/js/utils/changeType.js}"></script>
+<script th:src="@{/js/utils/search.js}"></script>
+<!--<script>-->
+<!--    function showName(name) {-->
+<!--        const typeName = name.getAttribute("data-name");-->
+<!--        const typeID = name.getAttribute("data-id");-->
+<!--        $("#Current-type").text(typeName)-->
+<!--        $("[name='currentTypeName']").val(typeName)-->
+<!--        $("#editModal [name='supOrSubType']").val(typeID)-->
+<!--    }-->
+<!--    function deleteType(name) {-->
+<!--        const supOrSubType = name.getAttribute("data-type");-->
+<!--        const typeName = name.getAttribute("data-name");-->
+<!--        $("#deleteModal [name='supOrSubType']").val(supOrSubType)-->
+<!--        $("#deleteModal [name='typeName']").val(typeName)-->
+<!--    }-->
+<!--</script>-->
+</body>
+</html>

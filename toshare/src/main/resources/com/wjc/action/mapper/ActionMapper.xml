@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wjc.action.mapper.ActionMapper">
+
+    <select id="ifFollow" parameterType="java.lang.String" resultType="Follow">
+        select * from t_follow where follow_uid=#{follow_uid} and follower_uid=#{follower_uid} limit 1
+    </select>
+
+    <select id="saveFollowInfo" parameterType="Follow">
+        insert into t_follow values (#{follow_uid},#{follower_uid},#{update_time})
+    </select>
+
+    <select id="deleteFollowInfo">
+        delete from t_follow where follow_uid=#{follow_uid} and follower_uid=#{follower_uid}
+    </select>
+
+
+
+    <select id="ifLike" parameterType="java.lang.String" resultType="Like">
+        select * from t_like where like_postid=#{like_postid} and like_uid=#{like_uid} limit 1
+    </select>
+
+    <select id="saveLikeInfo" parameterType="Follow">
+        insert into t_like values (#{like_postid},#{like_uid},#{update_time})
+    </select>
+
+    <select id="deleteLikeInfo">
+        delete from t_like where like_postid=#{like_postid} and like_uid=#{like_uid}
+    </select>
+
+
+    <select id="ifFavorite" parameterType="java.lang.String" resultType="Favorite">
+        select * from t_favorite where favorite_postid=#{favorite_postid} and favorite_uid=#{favorite_uid} limit 1
+    </select>
+
+    <select id="saveFavoriteInfo" parameterType="Favorite">
+        insert into t_favorite values (null, #{favorite_postid},#{favorite_uid},#{update_time})
+    </select>
+
+    <select id="deleteFavoriteInfo">
+        delete from t_favorite where favorite_postid=#{favorite_postid} and favorite_uid=#{favorite_uid}
+    </select>
+
+<!--    find favorite list by uid-->
+    <select id="findByUid" resultType="Favorite">
+        select * from t_favorite f, t_posts p where f.favorite_postid=p.post_id and favorite_uid=#{uid}
+    </select>
+</mapper>

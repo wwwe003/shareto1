@@ -1,0 +1,79 @@
+.activeB{
+    border-bottom: 4px solid #20c997;
+}
+.nav-item.top{
+    margin-right: 1.5rem
+}
+.nav-item.top:hover{
+    border-bottom: 4px solid #20c997;
+}
+#brand{
+    width: 200px; text-align: center;color: #009688;font-size: 25px
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    /*z-index: 100;*/
+    padding: 48px 0 0;
+}
+.sidebar-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 47px; /* Height of navbar */
+    height: calc(100vh - 47px);
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #393D49;
+}
+
+.sidebar li a{
+    /*margin: 0 1rem;*/
+    padding: 1rem 2rem;
+    color: rgba(255,255,255,.5);
+}
+.sidebar li{
+    border-left: 4px solid #393D49
+}
+
+.sidebar li.active{
+    border-left-color: #20c997;
+}
+
+.sidebar .parent:hover{
+    border-left: 4px solid #20c997;
+    background  : #5b5b5b;
+
+}
+.sidebar li a.active{
+    color: white;
+}
+
+
+.sidebar li a:hover{
+    color: white;
+}
+
+.nav-item.children{
+    padding-left: 1rem;
+    border-left-color: #212529;
+    background-color: #212529
+}
+.nav-item.children:hover{
+    background  : #5b5b5b;
+    border-left-color: #5b5b5b;
+}
+
+.nav-item.children a.active{
+   color: white;
+}
+
+.custom-button{
+    width: 60px;
+    margin-right: 10px;
+}
+.addCursor{
+    cursor: pointer;
+}
